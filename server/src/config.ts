@@ -11,13 +11,49 @@ export const config = {
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
 }
 
-export async function connectDatabase() {
-  if (!config.mongoUri) throw new Error('MONGODB_URI is required')
-  await mongoose.connect(config.mongoUri)
-  await Patient.syncIndexes()
+interface MongooseCache {
+  conn: typeof mongoose | null
+  promise: Promise<typeof mongoose> | null
 }
 
-export async function disconnectDatabase() { await mongoose.disconnect() }
+declare global {
+  // eslint-disable-next-line no-var
+  var __mongooseCache: MongooseCache | undefined
+}
+
+const cached: MongooseCache = global.__mongooseCache ?? { conn: null, promise: null }
+if (!global.__mongooseCache) global.__mongooseCache = cached
+
+let indexesSynced = false
+
+export async function connectDatabase() {
+  if (!config.mongoUri) throw new Error('MONGODB_URI is required')
+
+  if (cached.conn) return cached.conn
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(config.mongoUri).catch((err) => {
+      cached.promise = null
+      throw err
+    })
+  }
+
+  cached.conn = await cached.promise
+
+  if (!indexesSynced) {
+    await Patient.syncIndexes()
+    indexesSynced = true
+  }
+
+  return cached.conn
+}
+
+export async function disconnectDatabase() {
+  await mongoose.disconnect()
+  cached.conn = null
+  cached.promise = null
+  indexesSynced = false
+}
 export function requireConfig() {
   if (!config.jwtSecret) throw new Error('JWT_SECRET is required')
 }
