@@ -20,11 +20,18 @@ function ensureReady() {
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
     await ensureReady()
-  } catch (error) {
+  } catch (error: any) {
     console.error('API initialization failed:', error)
     res.statusCode = 500
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }))
+    res.end(
+      JSON.stringify({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: error?.message || 'Internal server error',
+        },
+      })
+    )
     return
   }
 

@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import mongoose from 'mongoose'
-import { Patient, Visit } from './models'
+import bcrypt from 'bcryptjs'
+import { Admin, Patient, Visit } from './models'
 
 export const config = {
   port: Number(process.env.PORT || 4000),
@@ -25,9 +26,10 @@ const cached: MongooseCache = global.__mongooseCache ?? { conn: null, promise: n
 if (!global.__mongooseCache) global.__mongooseCache = cached
 
 let indexesSynced = false
+let adminSeeded = false
 
 export async function connectDatabase() {
-  if (!config.mongoUri) throw new Error('MONGODB_URI is required')
+  if (!config.mongoUri) throw new Error('MONGODB_URI is required in environment variables')
 
   if (cached.conn) return cached.conn
 
@@ -41,8 +43,21 @@ export async function connectDatabase() {
   cached.conn = await cached.promise
 
   if (!indexesSynced) {
-    await Patient.syncIndexes()
+    await Patient.syncIndexes().catch(() => {})
     indexesSynced = true
+  }
+
+  if (!adminSeeded && config.adminPassword) {
+    try {
+      const existing = await Admin.findOne({ email: config.adminEmail })
+      if (!existing) {
+        const hash = await bcrypt.hash(config.adminPassword, 12)
+        await Admin.create({ email: config.adminEmail, passwordHash: hash })
+      }
+      adminSeeded = true
+    } catch {
+      // Ignore initial seed errors
+    }
   }
 
   return cached.conn
