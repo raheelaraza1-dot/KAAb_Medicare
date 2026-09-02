@@ -2,14 +2,17 @@ import { clearToken, getStoredToken, isTokenExpired } from '../lib/auth'
 
 function resolveApiUrl() {
   const fromVite =
-    typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL
+    typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL !== undefined
       ? String(import.meta.env.VITE_API_URL)
-      : ''
+      : undefined
   const fromNext =
-    typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL
+    typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL !== undefined
       ? String(process.env.NEXT_PUBLIC_API_URL)
-      : ''
-  return (fromVite || fromNext || 'http://localhost:4000').replace(/\/$/, '')
+      : undefined
+
+  if (fromVite !== undefined) return fromVite.replace(/\/$/, '')
+  if (fromNext !== undefined) return fromNext.replace(/\/$/, '')
+  return 'http://localhost:4000'
 }
 
 export const API_URL = resolveApiUrl()
