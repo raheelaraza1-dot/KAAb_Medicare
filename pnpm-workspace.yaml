@@ -1,0 +1,8 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  mongodb-memory-server: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@next/*'
+  - next

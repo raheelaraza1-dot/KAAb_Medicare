@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #0a0a0a;
+  --color-muted: #6b7280;
+  --color-line: #e5e7eb;
+  --color-page: #f6f7f9;
+  --color-card: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-page);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.login-mesh {
+  background:
+    radial-gradient(900px 500px at 12% 18%, rgba(17, 17, 17, 0.07), transparent 55%),
+    radial-gradient(700px 420px at 88% 82%, rgba(17, 17, 17, 0.05), transparent 50%),
+    #f4f5f7;
+}
+
+.login-rings {
+  background-image: repeating-radial-gradient(
+    circle at 50% 42%,
+    transparent 0,
+    transparent 46px,
+    rgba(0, 0, 0, 0.035) 47px,
+    transparent 48px
+  );
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 99px;
+}
