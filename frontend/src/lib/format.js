@@ -6,7 +6,7 @@ export function initials(name = '') {
 
 export function formatMoney(value) {
   const n = Number(value) || 0
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+  return `PKR ${n.toLocaleString('en-PK', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
 }
 
 export function formatNumber(value) {
@@ -86,6 +86,19 @@ export function getCompletedMonths(count = 6) {
   const now = new Date()
   for (let i = 1; i <= count; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    months.push({
+      start: startOfMonth(d),
+      end: endOfMonth(d),
+      label: d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    })
+  }
+  return months
+}
+
+export function getMonthsOfYear(year = new Date().getFullYear()) {
+  const months = []
+  for (let m = 0; m < 12; m++) {
+    const d = new Date(year, m, 1)
     months.push({
       start: startOfMonth(d),
       end: endOfMonth(d),

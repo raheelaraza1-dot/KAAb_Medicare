@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
 import { ChevronRight, TrendingUp, X } from 'lucide-react'
 import { api } from '../api/client.js'
-import { formatMoney, getCompletedMonths, isoDate } from '../lib/format.js'
+import { formatMoney, getMonthsOfYear, isoDate } from '../lib/format.js'
+
+const REPORT_YEAR = 2026
 
 export function MonthlyProfitSidebar() {
   const [open, setOpen] = useState(false)
   const [months, setMonths] = useState([])
+  const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -14,8 +17,9 @@ export function MonthlyProfitSidebar() {
     let live = true
     async function load() {
       setLoading(true)
+      setSelected(null)
       try {
-        const ranges = getCompletedMonths(12)
+        const ranges = getMonthsOfYear(REPORT_YEAR)
         const results = await Promise.all(
           ranges.map(async (m) => {
             const res = await api.summary(isoDate(m.start), isoDate(m.end))
@@ -72,7 +76,7 @@ export function MonthlyProfitSidebar() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">Monthly Profit</h3>
-                    <p className="text-xs text-gray-500">Last 12 completed months</p>
+                    <p className="text-xs text-gray-500">All months of {REPORT_YEAR}</p>
                   </div>
                 </div>
                 <button
@@ -86,9 +90,20 @@ export function MonthlyProfitSidebar() {
               </div>
 
               <div className="max-h-[60vh] overflow-y-auto px-5 py-4">
+                {selected && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 rounded-xl bg-emerald-50 px-4 py-3"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">{selected.label}</p>
+                    <p className="mt-1 text-2xl font-bold text-emerald-700">{formatMoney(selected.profit)}</p>
+                  </motion.div>
+                )}
+
                 {loading ? (
                   <div className="space-y-2">
-                    {[1, 2, 3, 4, 5].map((i) => (
+                    {Array.from({ length: 12 }, (_, i) => (
                       <div key={i} className="h-10 animate-pulse rounded-xl bg-gray-100" />
                     ))}
                   </div>
@@ -96,25 +111,39 @@ export function MonthlyProfitSidebar() {
                   <p className="py-6 text-center text-sm text-gray-500">No profit data available yet.</p>
                 ) : (
                   <ul className="space-y-1">
-                    {months.map((m, i) => (
-                      <motion.li
-                        key={m.label}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.03 }}
-                        className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-gray-50"
-                      >
-                        <span className="text-sm text-gray-600">{m.label}</span>
-                        <span className="text-sm font-semibold text-emerald-700">{formatMoney(m.profit)}</span>
-                      </motion.li>
-                    ))}
+                    {months.map((m, i) => {
+                      const isSelected = selected?.label === m.label
+                      return (
+                        <motion.li
+                          key={m.label}
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.02 }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setSelected(m)}
+                            className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left transition-colors ${
+                              isSelected ? 'bg-emerald-50 ring-1 ring-emerald-200' : 'hover:bg-gray-50'
+                            }`}
+                          >
+                            <span className={`text-sm ${isSelected ? 'font-medium text-gray-900' : 'text-gray-600'}`}>
+                              {m.label}
+                            </span>
+                            {isSelected && (
+                              <span className="text-sm font-semibold text-emerald-700">{formatMoney(m.profit)}</span>
+                            )}
+                          </button>
+                        </motion.li>
+                      )
+                    })}
                   </ul>
                 )}
               </div>
 
               {!loading && months.length > 0 && (
                 <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/80 px-5 py-3">
-                  <span className="text-sm font-medium text-gray-600">Total</span>
+                  <span className="text-sm font-medium text-gray-600">{REPORT_YEAR} Total</span>
                   <span className="text-base font-bold text-emerald-700">{formatMoney(total)}</span>
                 </div>
               )}
