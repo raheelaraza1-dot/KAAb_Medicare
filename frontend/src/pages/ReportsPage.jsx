@@ -51,12 +51,12 @@ export default function ReportsPage() {
       <PageTransition>
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Reports</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">Reports</h2>
             <p className="mt-1 text-sm text-gray-500">Profit, visit volume, and top medicines for the selected range.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-xl border border-gray-200 px-3 py-2 text-sm" />
-            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="rounded-xl border border-gray-200 px-3 py-2 text-sm" />
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900" />
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900" />
             <button type="button" onClick={exportCsv} className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white">
               <Download className="h-4 w-4" /> Export
             </button>
@@ -74,7 +74,7 @@ export default function ReportsPage() {
             </div>
 
             <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5">
-              <h3 className="font-semibold">Daily profit</h3>
+              <h3 className="font-semibold text-gray-900">Daily profit</h3>
               {(data?.byDay || []).length === 0 ? (
                 <div className="mt-4">
                   <EmptyState title="No activity in this range" body="Try a wider date range or add visits." />
@@ -99,14 +99,26 @@ export default function ReportsPage() {
 
             <section className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white">
               <div className="border-b border-gray-100 px-5 py-4">
-                <h3 className="font-semibold">Top medicines</h3>
+                <h3 className="font-semibold text-gray-900">Top medicines</h3>
               </div>
               {(data?.topMedicines || []).length === 0 ? (
                 <div className="p-5">
                   <EmptyState title="No medicines yet" body="Prescriptions will appear here once visits are recorded." />
                 </div>
               ) : (
-                <table className="min-w-full text-left text-sm">
+                <>
+                <div className="divide-y divide-gray-100 md:hidden">
+                  {data.topMedicines.map((m) => (
+                    <div key={m._id} className="flex items-center justify-between gap-3 px-4 py-3">
+                      <div className="min-w-0">
+                        <p className="font-medium text-gray-900">{m._id}</p>
+                        <p className="text-sm text-gray-500">Qty: {m.quantity}</p>
+                      </div>
+                      <p className="font-semibold text-emerald-700">{formatMoney(m.profit)}</p>
+                    </div>
+                  ))}
+                </div>
+                <table className="hidden min-w-full text-left text-sm md:table">
                   <thead className="text-xs uppercase text-gray-400">
                     <tr>
                       <th className="px-5 py-3 font-medium">Medicine</th>
@@ -117,13 +129,14 @@ export default function ReportsPage() {
                   <tbody>
                     {data.topMedicines.map((m) => (
                       <tr key={m._id} className="border-t border-gray-100">
-                        <td className="px-5 py-3 font-medium">{m._id}</td>
-                        <td className="px-5 py-3">{m.quantity}</td>
-                        <td className="px-5 py-3">{formatMoney(m.profit)}</td>
+                        <td className="px-5 py-3 font-medium text-gray-900">{m._id}</td>
+                        <td className="px-5 py-3 text-gray-900">{m.quantity}</td>
+                        <td className="px-5 py-3 text-gray-900">{formatMoney(m.profit)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                </>
               )}
             </section>
           </>

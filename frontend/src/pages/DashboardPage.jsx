@@ -147,19 +147,19 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-500 lg:hidden">
                   {greeting()}, Dr. {displayName}
                 </p>
-                <h2 className="text-3xl font-extrabold tracking-tight">Overview</h2>
-                <p className="mt-1.5 text-base text-gray-500">
+                <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">Overview</h2>
+                <p className="mt-1.5 text-sm text-gray-500 sm:text-base">
                   {isToday
                     ? "Here is the summary of your clinic's performance today."
                     : `Performance summary for ${formatDayLabel(selectedDate)}.`}
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <div className="relative" ref={datePickerRef}>
                   <button
                     type="button"
                     onClick={() => setShowDatePicker((v) => !v)}
-                    className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                    className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium text-gray-900 transition-all duration-200 ${
                       showDatePicker
                         ? 'border-black bg-gray-50 shadow-sm'
                         : 'border-gray-200 bg-white/90 hover:border-gray-300 hover:shadow-sm'
@@ -186,7 +186,7 @@ export default function DashboardPage() {
                           onChange={(e) => {
                             if (e.target.value) setSelectedDate(new Date(`${e.target.value}T12:00:00`))
                           }}
-                          className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-black"
+                          className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-black"
                         />
                         <div className="mt-3 flex gap-2">
                           <button
@@ -199,7 +199,7 @@ export default function DashboardPage() {
                           <button
                             type="button"
                             onClick={() => setShowDatePicker(false)}
-                            className="flex-1 rounded-xl border border-gray-200 py-2 text-sm font-medium transition-colors hover:bg-gray-50"
+                            className="flex-1 rounded-xl border border-gray-200 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50"
                           >
                             Close
                           </button>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={exportReport}
-                  className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm transition-shadow hover:shadow-md"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm transition-shadow hover:shadow-md sm:flex-none sm:px-4"
                 >
                   <Download className="h-4 w-4" />
                   Export Report
@@ -261,18 +261,18 @@ export default function DashboardPage() {
               />
             </div>
 
-            <div className="mt-5 grid gap-3 sm:hidden sm:grid-cols-2">
+            <div className="mt-5 grid grid-cols-2 gap-3 lg:hidden">
               <Link to="/patients/new" className="flex items-center justify-center gap-2 rounded-xl bg-black py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90">
                 <UserPlus className="h-4 w-4" /> New Patient
               </Link>
-              <Link to="/patients" className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold transition-colors hover:bg-gray-50">
+              <Link to="/patients" className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50">
                 <CalendarDays className="h-4 w-4" /> Patients
               </Link>
             </div>
 
             <section className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-              <div className="flex flex-col gap-3 border-b border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <h3 className="text-lg font-bold">Recent Visits</h3>
+              <div className="flex flex-col gap-3 border-b border-gray-100 px-4 py-4 sm:px-5 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className="text-lg font-bold text-gray-900">Recent Visits</h3>
                 <input
                   value={q}
                   onChange={(e) => {
@@ -280,7 +280,7 @@ export default function DashboardPage() {
                     setPage(1)
                   }}
                   placeholder="Quick search..."
-                  className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm transition-all focus:border-black sm:w-56"
+                  className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 transition-all focus:border-black sm:w-56"
                 />
               </div>
               {slice.length === 0 ? (
@@ -291,7 +291,31 @@ export default function DashboardPage() {
                   />
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <>
+                  <div className="divide-y divide-gray-100 md:hidden">
+                    {slice.map((row) => (
+                      <button
+                        key={row.visit._id}
+                        type="button"
+                        onClick={() => navigate(`/patients/${row.patient._id}`)}
+                        className="flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-gray-50 active:bg-gray-100"
+                      >
+                        <Avatar name={row.patient.name} />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-gray-900">{row.patient.name}</p>
+                          <p className="mt-0.5 text-xs text-gray-500">{formatDateTime(row.visit.visitDate)}</p>
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
+                              <Pill className="h-3 w-3" />
+                              {row.visit.medicines?.length || 0} items
+                            </span>
+                            <span className="text-sm font-semibold text-emerald-700">{formatMoney(row.visit.visitTotalProfit)}</span>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="hidden overflow-x-auto md:block">
                   <table className="min-w-full text-left text-sm">
                     <thead className="text-xs uppercase tracking-wide text-gray-400">
                       <tr>
@@ -315,17 +339,17 @@ export default function DashboardPage() {
                             <td className="px-5 py-3">
                               <div className="flex items-center gap-3">
                                 <Avatar name={row.patient.name} />
-                                <span className="font-medium">{row.patient.name}</span>
+                                <span className="font-medium text-gray-900">{row.patient.name}</span>
                               </div>
                             </td>
                             <td className="px-5 py-3 text-gray-600">{formatDateTime(row.visit.visitDate)}</td>
                             <td className="px-5 py-3">
-                              <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium">
+                              <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
                                 <Pill className="h-3 w-3" />
                                 {row.visit.medicines?.length || 0} items
                               </span>
                             </td>
-                            <td className="px-5 py-3 font-medium">{formatMoney(row.visit.visitTotalProfit)}</td>
+                            <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(row.visit.visitTotalProfit)}</td>
                             <td className="px-5 py-3">
                               <Link
                                 to={`/patients/${row.patient._id}`}
@@ -340,6 +364,7 @@ export default function DashboardPage() {
                       </AnimatePresence>
                     </tbody>
                   </table>
+                  </div>
                   <Pagination
                     page={page}
                     pages={pages}
@@ -347,7 +372,7 @@ export default function DashboardPage() {
                     pageSize={pageSize}
                     onPage={setPage}
                   />
-                </div>
+                </>
               )}
             </section>
           </>

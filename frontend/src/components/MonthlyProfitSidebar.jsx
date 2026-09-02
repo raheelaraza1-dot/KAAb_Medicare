@@ -71,7 +71,7 @@ export function MonthlyProfitSidebar() {
                     <TrendingUp className="h-4 w-4 text-emerald-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Monthly Profit</h3>
+                    <h3 className="font-semibold text-gray-900">Monthly Profit</h3>
                     <p className="text-xs text-gray-500">Last 12 completed months</p>
                   </div>
                 </div>

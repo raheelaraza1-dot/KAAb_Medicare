@@ -68,7 +68,7 @@ export default function AddPatientPage() {
     <AppLayout>
       <PageTransition>
         <div className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Add New Patient</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Add New Patient</h2>
           <p className="mt-1 text-sm text-gray-500">Register a new patient and prescribe medication.</p>
         </div>
 
@@ -76,29 +76,29 @@ export default function AddPatientPage() {
 
         <form onSubmit={onSubmit} className="space-y-6">
           <section className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
-            <h3 className="mb-4 text-lg font-semibold">Patient Information</h3>
-            <label className="block text-sm font-medium">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">Patient Information</h3>
+            <label className="block text-sm font-medium text-gray-900">
               Full Name
               <input
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="e.g. Jane Doe"
-                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-black"
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-black"
               />
             </label>
             <div className="mt-4 grid gap-4 md:grid-cols-3">
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Phone Number
                 <input
                   required
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   placeholder="+1 (555) 000-0000"
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-black"
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-black"
                 />
               </label>
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Age
                 <input
                   type="number"
@@ -107,10 +107,10 @@ export default function AddPatientPage() {
                   value={form.age}
                   onChange={(e) => setForm({ ...form, age: e.target.value })}
                   placeholder="Years"
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-black"
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-black"
                 />
               </label>
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Gender
                 <select
                   value={form.gender}
@@ -124,42 +124,42 @@ export default function AddPatientPage() {
                 </select>
               </label>
             </div>
-            <label className="mt-4 block text-sm font-medium">
+            <label className="mt-4 block text-sm font-medium text-gray-900">
               Address
               <textarea
                 rows={3}
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 placeholder="Street address, City, ZIP"
-                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-black"
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-black"
               />
             </label>
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-lg font-semibold">Prescribed Medicine</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Prescribed Medicine</h3>
               <div className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-semibold tracking-wide text-gray-700">
                 TOTAL EST. PROFIT {formatMoney(totalProfit)}
               </div>
             </div>
             <div className="mb-4 grid gap-4 md:grid-cols-2">
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Diagnosis
                 <input
                   value={form.diagnosis}
                   onChange={(e) => setForm({ ...form, diagnosis: e.target.value })}
                   placeholder="e.g. Routine checkup"
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
               </label>
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Notes
                 <input
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   placeholder="Optional clinical notes"
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
               </label>
             </div>
@@ -185,7 +185,7 @@ export default function AddPatientPage() {
                       value={m.medicineName}
                       onChange={(e) => updateMed(i, 'medicineName', e.target.value)}
                       placeholder="e.g. Amoxicillin 500mg"
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                     />
                     <input
                       type="number"
@@ -194,7 +194,7 @@ export default function AddPatientPage() {
                       value={m.tradePrice}
                       onChange={(e) => updateMed(i, 'tradePrice', e.target.value)}
                       placeholder="0.00"
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                     />
                     <input
                       type="number"
@@ -203,16 +203,16 @@ export default function AddPatientPage() {
                       value={m.sellingPrice}
                       onChange={(e) => updateMed(i, 'sellingPrice', e.target.value)}
                       placeholder="0.00"
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                     />
                     <input
                       type="number"
                       min="0"
                       value={m.quantity}
                       onChange={(e) => updateMed(i, 'quantity', e.target.value)}
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                     />
-                    <div className="flex items-center px-1 text-sm font-medium">
+                    <div className="flex items-center px-1 text-sm font-medium text-gray-900">
                       {formatMoney(lineProfit(m.sellingPrice, m.tradePrice, m.quantity))}
                     </div>
                     <button
@@ -229,14 +229,14 @@ export default function AddPatientPage() {
             <button
               type="button"
               onClick={() => setMeds((rows) => [...rows, emptyMed()])}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium hover:bg-gray-50"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-50"
             >
               <Plus className="h-4 w-4" /> Add another medicine
             </button>
           </section>
 
-          <div className="flex justify-end gap-3">
-            <button type="button" onClick={() => navigate(-1)} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button type="button" onClick={() => navigate(-1)} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-900">
               Cancel
             </button>
             <motion.button

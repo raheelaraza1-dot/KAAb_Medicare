@@ -178,7 +178,7 @@ export default function PatientProfilePage() {
   return (
     <AppLayout>
       <PageTransition>
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -186,11 +186,11 @@ export default function PatientProfilePage() {
           >
             <ArrowLeft className="h-4 w-4" /> Back
           </button>
-          <h2 className="text-lg font-bold tracking-tight">Patient Record</h2>
+          <h2 className="text-center text-lg font-bold tracking-tight text-gray-900 sm:flex-1">Patient Record</h2>
           <button
             type="button"
             onClick={() => setShowEdit(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
           >
             <Pencil className="h-4 w-4" /> Edit patient
           </button>
@@ -238,7 +238,7 @@ export default function PatientProfilePage() {
                 </div>
                 <div className="border-b border-gray-100 p-6 sm:border-b-0 sm:border-r">
                   <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Total visits</p>
-                  <p className="mt-2 text-3xl font-extrabold">{patient.totalVisits || 0}</p>
+                  <p className="mt-2 text-3xl font-extrabold text-gray-900">{patient.totalVisits || 0}</p>
                 </div>
                 <div className="p-6">
                   <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Profit generated</p>
@@ -258,7 +258,7 @@ export default function PatientProfilePage() {
             <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               <div className="flex flex-col gap-3 border-b border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-xl font-bold">Visit History</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Visit History</h3>
                   <p className="mt-0.5 text-sm text-gray-500">{visits.length} visit{visits.length !== 1 ? 's' : ''} on record</p>
                 </div>
                 <div className="relative">
@@ -267,7 +267,7 @@ export default function PatientProfilePage() {
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
                     placeholder="Filter visits..."
-                    className="w-full rounded-xl border border-gray-200 py-2.5 pl-9 pr-3 text-sm transition-all focus:border-black sm:w-56"
+                    className="w-full rounded-xl border border-gray-200 py-2.5 pl-9 pr-3 text-sm text-gray-900 transition-all focus:border-black sm:w-56"
                   />
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function PatientProfilePage() {
                               <span className="text-gray-400">·</span>
                               <span>{formatDateTime(v.visitDate)}</span>
                             </div>
-                            <h4 className="mt-3 text-lg font-bold">{v.diagnosis || 'Clinic visit'}</h4>
+                            <h4 className="mt-3 text-lg font-bold text-gray-900">{v.diagnosis || 'Clinic visit'}</h4>
                             <p className="mt-1 max-w-3xl text-sm leading-relaxed text-gray-600">
                               {v.notes || 'No additional notes recorded for this visit.'}
                             </p>
@@ -388,14 +388,14 @@ export default function PatientProfilePage() {
                   value={visitForm.diagnosis}
                   onChange={(e) => setVisitForm({ ...visitForm, diagnosis: e.target.value })}
                   placeholder="Diagnosis / visit type"
-                  className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                  className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
                 <textarea
                   value={visitForm.notes}
                   onChange={(e) => setVisitForm({ ...visitForm, notes: e.target.value })}
                   placeholder="Clinical notes"
                   rows={3}
-                  className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+                  className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
                 {meds.map((m, i) => (
                   <div key={i} className="grid grid-cols-2 gap-2">
@@ -403,32 +403,32 @@ export default function PatientProfilePage() {
                       value={m.medicineName}
                       onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, medicineName: e.target.value } : r)))}
                       placeholder="Medicine"
-                      className="col-span-2 rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                      className="col-span-2 rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
                     />
                     <input
                       type="number"
                       value={m.tradePrice}
                       onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, tradePrice: e.target.value } : r)))}
                       placeholder="Trade"
-                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
                     />
                     <input
                       type="number"
                       value={m.sellingPrice}
                       onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, sellingPrice: e.target.value } : r)))}
                       placeholder="Selling"
-                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
                     />
                     <input
                       type="number"
                       value={m.quantity}
                       onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, quantity: e.target.value } : r)))}
-                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
                     />
-                    <p className="self-center text-sm">{formatMoney(lineProfit(m.sellingPrice, m.tradePrice, m.quantity))}</p>
+                    <p className="self-center text-sm text-gray-900">{formatMoney(lineProfit(m.sellingPrice, m.tradePrice, m.quantity))}</p>
                   </div>
                 ))}
-                <button type="button" onClick={() => setMeds((rows) => [...rows, emptyMed()])} className="text-sm font-medium">
+                <button type="button" onClick={() => setMeds((rows) => [...rows, emptyMed()])} className="text-sm font-medium text-gray-900">
                   + Add medicine
                 </button>
                 <button disabled={saving} className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-semibold text-white">
@@ -441,20 +441,20 @@ export default function PatientProfilePage() {
             <Modal title="Edit patient details" onClose={() => setShowEdit(false)}>
               <form onSubmit={saveEdit} className="space-y-3">
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Full name</label>
-                <input required value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} placeholder="Patient name" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm" />
+                <input required value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} placeholder="Patient name" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</label>
-                <input required value={edit.phone} onChange={(e) => setEdit({ ...edit, phone: e.target.value })} placeholder="Phone number" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm" />
+                <input required value={edit.phone} onChange={(e) => setEdit({ ...edit, phone: e.target.value })} placeholder="Phone number" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Age</label>
-                <input type="number" value={edit.age} onChange={(e) => setEdit({ ...edit, age: e.target.value })} placeholder="Age" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm" />
+                <input type="number" value={edit.age} onChange={(e) => setEdit({ ...edit, age: e.target.value })} placeholder="Age" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Gender</label>
-                <select value={edit.gender} onChange={(e) => setEdit({ ...edit, gender: e.target.value })} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm">
+                <select value={edit.gender} onChange={(e) => setEdit({ ...edit, gender: e.target.value })} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900">
                   <option value="">Select gender</option>
                   <option value="F">Female</option>
                   <option value="M">Male</option>
                   <option value="Other">Other</option>
                 </select>
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Address</label>
-                <textarea value={edit.address} onChange={(e) => setEdit({ ...edit, address: e.target.value })} placeholder="Address" rows={3} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm" />
+                <textarea value={edit.address} onChange={(e) => setEdit({ ...edit, address: e.target.value })} placeholder="Address" rows={3} className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <button disabled={saving} className="w-full rounded-xl bg-black py-2.5 text-sm font-semibold text-white">
                   {saving ? 'Saving…' : 'Save changes'}
                 </button>
@@ -479,10 +479,10 @@ function Modal({ title, children, onClose }) {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-        className="relative w-full max-w-md rounded-2xl bg-white p-5 shadow-xl"
+        className="relative w-full max-w-md rounded-2xl bg-white p-5 shadow-xl sm:max-h-[90vh] sm:overflow-y-auto"
       >
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-semibold">{title}</h3>
+          <h3 className="font-semibold text-gray-900">{title}</h3>
           <button type="button" onClick={onClose} className="text-sm text-gray-500 transition-colors hover:text-black">
             Close
           </button>

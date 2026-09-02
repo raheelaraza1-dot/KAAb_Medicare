@@ -19,12 +19,27 @@ body,
   min-height: 100%;
 }
 
+html {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
   background: var(--color-page);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea,
+select {
+  color: var(--color-ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
 }
 
 input,

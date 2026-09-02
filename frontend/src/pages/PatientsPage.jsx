@@ -68,7 +68,7 @@ export default function PatientsPage() {
     >
       <PageTransition>
         <div className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Patient Directory</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Patient Directory</h2>
           <p className="mt-1 text-sm text-gray-500">Search and manage clinic patient records.</p>
         </div>
 
@@ -79,13 +79,13 @@ export default function PatientsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search patients by name, phone, or ID..."
-              className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm focus:border-black"
+              className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-black"
             />
           </div>
           <button
             type="button"
             onClick={() => setShowFilter((v) => !v)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900"
           >
             <Filter className="h-4 w-4" />
             Filter
@@ -94,7 +94,7 @@ export default function PatientsPage() {
 
         {showFilter && (
           <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-4">
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-gray-900">
               Minimum visits
               <input
                 type="number"
@@ -104,7 +104,7 @@ export default function PatientsPage() {
                   setMinVisits(e.target.value)
                   setPage(1)
                 }}
-                className="mt-1 w-40 rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                className="mt-1 w-40 rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
               />
             </label>
           </div>
@@ -117,8 +117,29 @@ export default function PatientsPage() {
           <EmptyState title="No patients found" body="Add a patient to start building the clinic directory." />
         ) : (
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-left text-sm">
+            <div className="divide-y divide-gray-100 md:hidden">
+              {slice.map((p, i) => (
+                <button
+                  key={p._id}
+                  type="button"
+                  onClick={() => navigate(`/patients/${p._id}`)}
+                  className="flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-gray-50 active:bg-gray-100"
+                >
+                  <Avatar name={p.name} />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-gray-900">{p.name}</p>
+                    <p className="text-xs text-gray-500">ID: {patientCode(p._id)} · {p.phone}</p>
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                      <span className="text-gray-600">{formatNumber(p.totalVisits)} visits</span>
+                      <span className="font-semibold text-emerald-700">{formatMoney(p.totalProfit)}</span>
+                    </div>
+                  </div>
+                  <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-gray-400" />
+                </button>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto md:block">
+            <table className="min-w-full text-left text-sm">
                 <thead className="text-xs uppercase tracking-wide text-gray-400">
                   <tr>
                     <th className="px-5 py-3 font-medium">Patient Name</th>
@@ -143,15 +164,15 @@ export default function PatientsPage() {
                         <div className="flex items-center gap-3">
                           <Avatar name={p.name} />
                           <div>
-                            <p className="font-medium">{p.name}</p>
+                            <p className="font-medium text-gray-900">{p.name}</p>
                             <p className="text-xs text-gray-400">ID: {patientCode(p._id)}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-5 py-3 text-gray-600">{p.phone}</td>
                       <td className="px-5 py-3 text-gray-600">{formatDate(p.createdAt)}</td>
-                      <td className="px-5 py-3">{formatNumber(p.totalVisits)}</td>
-                      <td className="px-5 py-3 font-medium">{formatMoney(p.totalProfit)}</td>
+                      <td className="px-5 py-3 text-gray-900">{formatNumber(p.totalVisits)}</td>
+                      <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalProfit)}</td>
                       <td className="px-5 py-3">
                         <Link
                           to={`/patients/${p._id}`}

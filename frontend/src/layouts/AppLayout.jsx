@@ -99,46 +99,60 @@ export function AppLayout({ children, onSearch, searchPlaceholder = 'Search pati
       </aside>
 
       <div className="lg:pl-[260px]">
-        <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-gray-200 bg-white/90 px-4 py-3 backdrop-blur lg:px-8">
-          <button
-            type="button"
-            className="grid h-10 w-10 place-items-center rounded-xl border border-gray-200 transition-colors hover:bg-gray-50 lg:hidden"
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <h1 className="hidden text-lg font-bold tracking-tight lg:block">KAAB Medicare</h1>
-          <form onSubmit={submitSearch} className="relative mx-auto hidden max-w-xl flex-1 md:block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur">
+          <div className="flex items-center gap-3 px-4 py-3 lg:px-8">
+            <button
+              type="button"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gray-200 transition-colors hover:bg-gray-50 lg:hidden"
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5 text-gray-900" />
+            </button>
+            <div className="min-w-0 lg:hidden">
+              <h1 className="truncate text-base font-bold tracking-tight text-gray-900">KAAB Medicare</h1>
+            </div>
+            <h1 className="hidden text-lg font-bold tracking-tight text-gray-900 lg:block">KAAB Medicare</h1>
+            <form onSubmit={submitSearch} className="relative mx-auto hidden max-w-xl flex-1 md:block">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 outline-none transition-all duration-200 focus:border-black focus:bg-white focus:shadow-sm"
+              />
+            </form>
+            <div className="ml-auto flex shrink-0 items-center gap-2">
+              <button type="button" className="grid h-10 w-10 place-items-center rounded-full text-gray-600 transition-colors hover:bg-gray-100" aria-label="Notifications">
+                <Bell className="h-5 w-5" />
+              </button>
+              <button type="button" className="hidden h-10 w-10 place-items-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 sm:grid" aria-label="Help">
+                <CircleHelp className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  logout()
+                  navigate('/login')
+                }}
+                className="hidden text-sm font-medium text-gray-600 transition-colors hover:text-black sm:block"
+              >
+                Logout
+              </button>
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-black text-xs font-semibold text-white shadow-sm" title={email}>
+                {(email?.[0] || 'A').toUpperCase()}
+              </span>
+            </div>
+          </div>
+          <form onSubmit={submitSearch} className="relative border-t border-gray-100 px-4 py-2 md:hidden">
+            <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all duration-200 focus:border-black focus:bg-white focus:shadow-sm"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 outline-none transition-all duration-200 focus:border-black focus:bg-white"
             />
           </form>
-          <div className="ml-auto flex items-center gap-2">
-            <button type="button" className="grid h-10 w-10 place-items-center rounded-full text-gray-600 transition-colors hover:bg-gray-100" aria-label="Notifications">
-              <Bell className="h-5 w-5" />
-            </button>
-            <button type="button" className="hidden h-10 w-10 place-items-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 sm:grid" aria-label="Help">
-              <CircleHelp className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                logout()
-                navigate('/login')
-              }}
-              className="hidden text-sm font-medium text-gray-600 transition-colors hover:text-black sm:block"
-            >
-              Logout
-            </button>
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-black text-xs font-semibold text-white shadow-sm" title={email}>
-              {(email?.[0] || 'A').toUpperCase()}
-            </span>
-          </div>
         </header>
 
         <main className="px-4 py-6 pb-24 lg:px-8 lg:pb-8">{children}</main>

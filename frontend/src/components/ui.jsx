@@ -38,7 +38,7 @@ export function StatCard({ icon, label, value, badge, delay = 0 }) {
       )}
       <p className="text-xs font-semibold tracking-wide text-gray-500">{label}</p>
       <div className="mt-1.5 flex items-end justify-between gap-3">
-        <p className="text-2xl font-extrabold tracking-tight">{value}</p>
+        <p className="text-2xl font-extrabold tracking-tight text-gray-900">{value}</p>
         {badge}
       </div>
     </motion.div>
@@ -75,7 +75,7 @@ export function Badge({ children, tone = 'gray' }) {
 export function EmptyState({ title, body }) {
   return (
     <div className="rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-14 text-center">
-      <p className="font-semibold">{title}</p>
+      <p className="font-semibold text-gray-900">{title}</p>
       <p className="mt-1 text-sm text-gray-500">{body}</p>
     </div>
   )
@@ -117,7 +117,7 @@ export function Pagination({ page, pages, total, pageSize, onPage }) {
             key={n}
             type="button"
             onClick={() => onPage(n)}
-            className={`h-8 w-8 rounded-lg text-sm font-medium ${n === page ? 'bg-black text-white' : 'hover:bg-gray-100'}`}
+            className={`h-8 w-8 rounded-lg text-sm font-medium ${n === page ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100'}`}
           >
             {n}
           </button>
