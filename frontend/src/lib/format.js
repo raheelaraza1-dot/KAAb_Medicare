@@ -99,6 +99,15 @@ export function isoDate(date) {
   return new Date(date).toISOString()
 }
 
+/** YYYY-MM-DD in the user's local timezone (for `<input type="date">`). */
+export function toLocalDateString(date = new Date()) {
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 export function greeting() {
   const hour = new Date().getHours()
   if (hour < 12) return 'Good morning'

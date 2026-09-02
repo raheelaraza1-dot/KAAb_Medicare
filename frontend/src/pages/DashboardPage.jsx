@@ -19,6 +19,7 @@ import {
   startOfDay,
   startOfMonth,
   toCsv,
+  toLocalDateString,
 } from '../lib/format.js'
 
 export default function DashboardPage() {
@@ -37,7 +38,7 @@ export default function DashboardPage() {
   const datePickerRef = useRef(null)
   const pageSize = 5
 
-  const dateInputValue = isoDate(selectedDate).slice(0, 10)
+  const dateInputValue = toLocalDateString(selectedDate)
 
   useEffect(() => {
     function onClickOutside(e) {
@@ -181,7 +182,7 @@ export default function DashboardPage() {
                         <input
                           type="date"
                           value={dateInputValue}
-                          max={isoDate(new Date()).slice(0, 10)}
+                          max={toLocalDateString()}
                           onChange={(e) => {
                             if (e.target.value) setSelectedDate(new Date(`${e.target.value}T12:00:00`))
                           }}

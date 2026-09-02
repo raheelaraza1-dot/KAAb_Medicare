@@ -4,11 +4,11 @@ import { Download } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { EmptyState, Loader, PageTransition, StatCard } from '../components/ui.jsx'
 import { api } from '../api/client.js'
-import { downloadText, endOfDay, formatMoney, formatNumber, isoDate, startOfMonth, toCsv } from '../lib/format.js'
+import { downloadText, endOfDay, formatMoney, formatNumber, startOfMonth, toCsv, toLocalDateString } from '../lib/format.js'
 
 export default function ReportsPage() {
-  const [from, setFrom] = useState(() => isoDate(startOfMonth()).slice(0, 10))
-  const [to, setTo] = useState(() => isoDate(endOfDay()).slice(0, 10))
+  const [from, setFrom] = useState(() => toLocalDateString(startOfMonth()))
+  const [to, setTo] = useState(() => toLocalDateString(endOfDay()))
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
