@@ -35,5 +35,6 @@ app.use(express.json({ limit: '1mb' }))
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, standardHeaders: true }))
 
 app.get('/health', (_req, res) => res.json({ status: 'ok', database: isDbReady() ? 'connected' : 'disconnected' }))
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', database: isDbReady() ? 'connected' : 'disconnected' }))
 app.use('/api', api)
 app.use(errors)

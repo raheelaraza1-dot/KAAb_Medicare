@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import type { Request, Response, NextFunction } from 'express'
+import type { Request, Response, NextFunction } from 'express-serve-static-core'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
@@ -118,7 +118,7 @@ router.put('/patients/:patientId/visits/:visitId', async (req: Request, res: Res
     if (data.notes !== undefined) v.notes = data.notes
     if (data.medicines !== undefined) v.medicines = data.medicines
     await v.save()
-    await syncPatientAggregates(req.params.patientId)
+    await syncPatientAggregates(String(req.params.patientId))
     res.json({ data: v })
   } catch (e) {
     next(e)
@@ -129,7 +129,7 @@ router.delete('/patients/:patientId/visits/:visitId', async (req: Request, res: 
   try {
     const v = await Visit.findOneAndDelete({ _id: req.params.visitId, patientId: req.params.patientId })
     if (!v) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Visit not found' } })
-    await syncPatientAggregates(req.params.patientId)
+    await syncPatientAggregates(String(req.params.patientId))
     res.json({ data: { deleted: true } })
   } catch (e) {
     next(e)

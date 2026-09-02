@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
+import type { Request, Response } from 'express-serve-static-core'
 import { app } from '../server/src/app'
 import { connectDatabase, requireConfig } from '../server/src/config'
 
@@ -39,6 +40,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     res.on('finish', () => resolve())
     res.on('close', () => resolve())
     res.on('error', reject)
-    app(req, res)
+    app(req as Request, res as Response)
   })
 }
