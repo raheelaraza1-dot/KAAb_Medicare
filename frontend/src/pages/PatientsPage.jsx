@@ -128,7 +128,7 @@ export default function PatientsPage() {
                   <Avatar name={p.name} />
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-gray-900">{p.name}</p>
-                    <p className="text-xs text-gray-500">ID: {patientCode(p._id)} · {p.phone}</p>
+                    <p className="text-xs text-gray-500">ID: {patientCode(p._id)}{p.phone ? ` · ${p.phone}` : ''}</p>
                     <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                       <span className="text-gray-600">{formatNumber(p.totalVisits)} visits</span>
                       <span className="font-semibold text-emerald-700">{formatMoney(p.totalProfit)}</span>
@@ -169,7 +169,7 @@ export default function PatientsPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-3 text-gray-600">{p.phone}</td>
+                      <td className="px-5 py-3 text-gray-600">{p.phone || '—'}</td>
                       <td className="px-5 py-3 text-gray-600">{formatDate(p.createdAt)}</td>
                       <td className="px-5 py-3 text-gray-900">{formatNumber(p.totalVisits)}</td>
                       <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalProfit)}</td>

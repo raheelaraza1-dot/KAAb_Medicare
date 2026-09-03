@@ -9,7 +9,7 @@ const MedicineSchema = new Schema({
 }, { _id: false })
 
 const PatientSchema = new Schema({
-  name: { type: String, required: true, trim: true }, phone: { type: String, required: true, trim: true, index: true, unique: true },
+  name: { type: String, required: true, trim: true }, phone: { type: String, trim: true, default: '' },
   age: { type: Number, min: 0, max: 150 }, gender: String, address: String,
   createdAt: { type: Date, default: Date.now }, totalVisits: { type: Number, default: 0 }, totalProfit: { type: Number, default: 0 },
 }, { timestamps: true })

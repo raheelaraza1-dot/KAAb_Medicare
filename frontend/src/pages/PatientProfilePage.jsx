@@ -222,7 +222,7 @@ export default function PatientProfilePage() {
                       </span>
                       <span className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-sm text-white backdrop-blur">
                         <Phone className="mr-1 inline h-3.5 w-3.5" />
-                        {patient.phone}
+                        {patient.phone || 'Phone n/a'}
                       </span>
                     </div>
                   </div>
@@ -443,7 +443,7 @@ export default function PatientProfilePage() {
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Full name</label>
                 <input required value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} placeholder="Patient name" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</label>
-                <input required value={edit.phone} onChange={(e) => setEdit({ ...edit, phone: e.target.value })} placeholder="Phone number" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
+                <input value={edit.phone} onChange={(e) => setEdit({ ...edit, phone: e.target.value })} placeholder="Phone number (optional)" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Age</label>
                 <input type="number" value={edit.age} onChange={(e) => setEdit({ ...edit, age: e.target.value })} placeholder="Age" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900" />
                 <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">Gender</label>

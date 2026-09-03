@@ -18,10 +18,10 @@ const medicine = z.object({
 
 const patient = z.object({
   name: z.string().min(1),
-  phone: z.string().min(3),
+  phone: z.string().optional().default(''),
   age: z.number().int().nonnegative().max(150).optional(),
-  gender: z.string().optional(),
-  address: z.string().optional(),
+  gender: z.string().optional().default(''),
+  address: z.string().optional().default(''),
 })
 
 const visit = z.object({

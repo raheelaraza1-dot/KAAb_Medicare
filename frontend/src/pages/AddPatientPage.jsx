@@ -32,8 +32,8 @@ export default function AddPatientPage() {
     try {
       const body = {
         name: form.name.trim(),
-        phone: form.phone.trim(),
       }
+      if (form.phone.trim()) body.phone = form.phone.trim()
       if (form.age !== '') body.age = Number(form.age)
       if (form.gender) body.gender = form.gender
       if (form.address) body.address = form.address.trim()
@@ -89,9 +89,8 @@ export default function AddPatientPage() {
             </label>
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               <label className="text-sm font-medium text-gray-900">
-                Phone Number
+                Phone Number <span className="text-xs font-normal text-gray-400">(Optional)</span>
                 <input
-                  required
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   placeholder="+1 (555) 000-0000"
