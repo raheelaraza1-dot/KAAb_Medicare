@@ -1,13 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from '../../../lib/react-router-dom.jsx'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
-import { Plus, Save, Trash2 } from 'lucide-react'
+import { Save } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { PageTransition } from '../components/ui.jsx'
+import { emptyMed, MedicineFormRows } from '../components/MedicineFormRows.jsx'
 import { api } from '../api/client.js'
 import { formatMoney, lineProfit } from '../lib/format.js'
-
-const emptyMed = () => ({ medicineName: '', tradePrice: '', sellingPrice: '', quantity: '1' })
 
 export default function AddPatientPage() {
   const navigate = useNavigate()
@@ -20,10 +18,6 @@ export default function AddPatientPage() {
     () => meds.reduce((sum, m) => sum + lineProfit(m.sellingPrice, m.tradePrice, m.quantity), 0),
     [meds],
   )
-
-  function updateMed(i, key, value) {
-    setMeds((rows) => rows.map((row, idx) => (idx === i ? { ...row, [key]: value } : row)))
-  }
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -162,92 +156,21 @@ export default function AddPatientPage() {
                 />
               </label>
             </div>
-            <div className="hidden grid-cols-[1.4fr_repeat(4,0.7fr)_auto] gap-2 px-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400 lg:grid">
-              <span>Medicine name</span>
-              <span>Trade price ($)</span>
-              <span>Selling price ($)</span>
-              <span>Qty</span>
-              <span>Profit</span>
-              <span />
-            </div>
-            <div className="mt-2 space-y-3">
-              <AnimatePresence>
-                {meds.map((m, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="grid gap-2 rounded-xl border border-gray-100 p-3 lg:grid-cols-[1.4fr_repeat(4,0.7fr)_auto] lg:border-0 lg:p-0"
-                  >
-                    <input
-                      value={m.medicineName}
-                      onChange={(e) => updateMed(i, 'medicineName', e.target.value)}
-                      placeholder="e.g. Amoxicillin 500mg"
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
-                    />
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={m.tradePrice}
-                      onChange={(e) => updateMed(i, 'tradePrice', e.target.value)}
-                      placeholder="0.00"
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
-                    />
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={m.sellingPrice}
-                      onChange={(e) => updateMed(i, 'sellingPrice', e.target.value)}
-                      placeholder="0.00"
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
-                    />
-                    <input
-                      type="number"
-                      min="0"
-                      value={m.quantity}
-                      onChange={(e) => updateMed(i, 'quantity', e.target.value)}
-                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
-                    />
-                    <div className="flex items-center px-1 text-sm font-medium text-gray-900">
-                      {formatMoney(lineProfit(m.sellingPrice, m.tradePrice, m.quantity))}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setMeds((rows) => (rows.length === 1 ? [emptyMed()] : rows.filter((_, idx) => idx !== i)))}
-                      className="grid h-10 w-10 place-items-center rounded-xl text-gray-400 hover:bg-rose-50 hover:text-rose-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-            <button
-              type="button"
-              onClick={() => setMeds((rows) => [...rows, emptyMed()])}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-50"
-            >
-              <Plus className="h-4 w-4" /> Add another medicine
-            </button>
+            <MedicineFormRows meds={meds} setMeds={setMeds} />
           </section>
 
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <button type="button" onClick={() => navigate(-1)} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-900">
               Cancel
             </button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <button
               disabled={saving}
               type="submit"
               className="inline-flex items-center gap-2 rounded-xl bg-black px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
             >
               <Save className="h-4 w-4" />
               {saving ? 'Saving…' : 'Save Patient Record'}
-            </motion.button>
+            </button>
           </div>
         </form>
       </PageTransition>

@@ -17,10 +17,10 @@ import {
 } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { Avatar, EmptyState, Loader, PageTransition } from '../components/ui.jsx'
+import { emptyMed, MedicineFormRows } from '../components/MedicineFormRows.jsx'
+import { PrintPrescriptionButton } from '../components/PrescriptionPrint.jsx'
 import { api } from '../api/client.js'
-import { formatDate, formatDateTime, formatMoney, formatTime, lineProfit, patientCode } from '../lib/format.js'
-
-const emptyMed = () => ({ medicineName: '', tradePrice: '', sellingPrice: '', quantity: '1' })
+import { formatDate, formatDateTime, formatMoney, formatTime, patientCode } from '../lib/format.js'
 
 export default function PatientProfilePage() {
   const { id } = useParams()
@@ -173,6 +173,26 @@ export default function PatientProfilePage() {
     }
   }
 
+  async function removePatient() {
+    if (
+      !window.confirm(
+        `Delete ${data?.patient?.name || 'this patient'} and all visit records? This cannot be undone.`,
+      )
+    ) {
+      return
+    }
+    setSaving(true)
+    setError('')
+    try {
+      await api.deletePatient(id)
+      navigate('/patients')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const patient = data?.patient
 
   return (
@@ -187,13 +207,24 @@ export default function PatientProfilePage() {
             <ArrowLeft className="h-4 w-4" /> Back
           </button>
           <h2 className="text-center text-lg font-bold tracking-tight text-gray-900 sm:flex-1">Patient Record</h2>
-          <button
-            type="button"
-            onClick={() => setShowEdit(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
-          >
-            <Pencil className="h-4 w-4" /> Edit patient
-          </button>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setShowEdit(true)}
+              disabled={saving}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50"
+            >
+              <Pencil className="h-4 w-4" /> Edit patient
+            </button>
+            <button
+              type="button"
+              onClick={removePatient}
+              disabled={saving}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-100 disabled:opacity-50"
+            >
+              <Trash2 className="h-4 w-4" /> Delete patient
+            </button>
+          </div>
         </div>
 
         {error && <p className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
@@ -303,7 +334,8 @@ export default function PatientProfilePage() {
                             </p>
                           </div>
                           <div className="flex shrink-0 flex-col items-end gap-2">
-                            <div className="flex gap-1">
+                            <div className="flex flex-wrap items-center justify-end gap-1">
+                              <PrintPrescriptionButton patient={patient} visit={v} />
                               <button
                                 type="button"
                                 onClick={() => openEditVisit(v)}
@@ -397,40 +429,7 @@ export default function PatientProfilePage() {
                   rows={3}
                   className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
-                {meds.map((m, i) => (
-                  <div key={i} className="grid grid-cols-2 gap-2">
-                    <input
-                      value={m.medicineName}
-                      onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, medicineName: e.target.value } : r)))}
-                      placeholder="Medicine"
-                      className="col-span-2 rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
-                    />
-                    <input
-                      type="number"
-                      value={m.tradePrice}
-                      onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, tradePrice: e.target.value } : r)))}
-                      placeholder="Trade"
-                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
-                    />
-                    <input
-                      type="number"
-                      value={m.sellingPrice}
-                      onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, sellingPrice: e.target.value } : r)))}
-                      placeholder="Selling"
-                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
-                    />
-                    <input
-                      type="number"
-                      value={m.quantity}
-                      onChange={(e) => setMeds((rows) => rows.map((r, idx) => (idx === i ? { ...r, quantity: e.target.value } : r)))}
-                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900"
-                    />
-                    <p className="self-center text-sm text-gray-900">{formatMoney(lineProfit(m.sellingPrice, m.tradePrice, m.quantity))}</p>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setMeds((rows) => [...rows, emptyMed()])} className="text-sm font-medium text-gray-900">
-                  + Add medicine
-                </button>
+                <MedicineFormRows meds={meds} setMeds={setMeds} compact />
                 <button disabled={saving} className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-semibold text-white">
                   <Save className="h-4 w-4" /> {saving ? 'Saving…' : editingVisit ? 'Update visit' : 'Save visit'}
                 </button>

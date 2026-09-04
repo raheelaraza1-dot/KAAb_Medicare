@@ -65,11 +65,17 @@ export const api = {
   createPatient: (data) => request('/api/patients', { method: 'POST', body: data }),
   patient: (id) => request(`/api/patients/${id}`),
   updatePatient: (id, data) => request(`/api/patients/${id}`, { method: 'PUT', body: data }),
+  deletePatient: (id) => request(`/api/patients/${id}`, { method: 'DELETE' }),
   createVisit: (id, data) => request(`/api/patients/${id}/visits`, { method: 'POST', body: data }),
   updateVisit: (patientId, visitId, data) =>
     request(`/api/patients/${patientId}/visits/${visitId}`, { method: 'PUT', body: data }),
   deleteVisit: (patientId, visitId) =>
     request(`/api/patients/${patientId}/visits/${visitId}`, { method: 'DELETE' }),
+  searchMedicines: (q) => {
+    const term = String(q || '').trim()
+    if (!term) return Promise.resolve({ data: [] })
+    return request(`/api/medicines/search?q=${encodeURIComponent(term)}`)
+  },
   summary: (from, to) => {
     const params = new URLSearchParams()
     if (from) params.set('from', from)

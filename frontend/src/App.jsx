@@ -8,6 +8,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'))
 const PatientsPage = lazy(() => import('./pages/PatientsPage.jsx'))
 const AddPatientPage = lazy(() => import('./pages/AddPatientPage.jsx'))
 const PatientProfilePage = lazy(() => import('./pages/PatientProfilePage.jsx'))
+const PrescriptionPrintPage = lazy(() => import('./pages/PrescriptionPrintPage.jsx'))
 const ReportsPage = lazy(() => import('./pages/ReportsPage.jsx'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'))
 
@@ -56,6 +57,14 @@ export default function App() {
           element={
             <Protected>
               {withSuspense(<AddPatientPage />)}
+            </Protected>
+          }
+        />
+        <Route
+          path="/patients/:id/prescription/:visitId"
+          element={
+            <Protected>
+              {withSuspense(<PrescriptionPrintPage />)}
             </Protected>
           }
         />

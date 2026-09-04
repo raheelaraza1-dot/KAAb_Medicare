@@ -95,6 +95,18 @@ router.put('/patients/:id', async (req: Request, res: Response, next: NextFuncti
   }
 })
 
+router.delete('/patients/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const p = await Patient.findById(req.params.id)
+    if (!p) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Patient not found' } })
+    await Visit.deleteMany({ patientId: p._id })
+    await Patient.findByIdAndDelete(p._id)
+    res.json({ data: { deleted: true } })
+  } catch (e) {
+    next(e)
+  }
+})
+
 router.post('/patients/:id/visits', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = visit.parse(req.body)
@@ -120,6 +132,34 @@ router.put('/patients/:patientId/visits/:visitId', async (req: Request, res: Res
     await v.save()
     await syncPatientAggregates(String(req.params.patientId))
     res.json({ data: v })
+  } catch (e) {
+    next(e)
+  }
+})
+
+router.get('/medicines/search', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const q = String(req.query.q || '').trim()
+    if (!q) {
+      return res.json({ data: [] })
+    }
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const results = await Visit.aggregate([
+      { $unwind: '$medicines' },
+      { $match: { 'medicines.medicineName': { $regex: escaped, $options: 'i' } } },
+      { $sort: { visitDate: -1 } },
+      {
+        $group: {
+          _id: { $toLower: '$medicines.medicineName' },
+          medicineName: { $first: '$medicines.medicineName' },
+          tradePrice: { $first: '$medicines.tradePrice' },
+          sellingPrice: { $first: '$medicines.sellingPrice' },
+        },
+      },
+      { $sort: { medicineName: 1 } },
+      { $limit: 15 },
+    ])
+    res.json({ data: results })
   } catch (e) {
     next(e)
   }
