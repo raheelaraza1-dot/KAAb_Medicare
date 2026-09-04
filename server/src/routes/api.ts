@@ -14,6 +14,9 @@ const medicine = z.object({
   tradePrice: z.number().nonnegative(),
   sellingPrice: z.number().nonnegative(),
   quantity: z.number().nonnegative().default(1),
+  morning: z.boolean().optional().default(false),
+  noon: z.boolean().optional().default(false),
+  night: z.boolean().optional().default(false),
 })
 
 const patient = z.object({

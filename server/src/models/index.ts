@@ -6,6 +6,9 @@ const MedicineSchema = new Schema({
   sellingPrice: { type: Number, required: true, min: 0 },
   quantity: { type: Number, required: true, min: 0, default: 1 },
   profit: { type: Number, required: true, default: 0 },
+  morning: { type: Boolean, default: false },
+  noon: { type: Boolean, default: false },
+  night: { type: Boolean, default: false },
 }, { _id: false })
 
 const PatientSchema = new Schema({

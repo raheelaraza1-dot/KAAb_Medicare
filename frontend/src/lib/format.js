@@ -132,6 +132,14 @@ export function lineProfit(sellingPrice, tradePrice, quantity) {
   return ((Number(sellingPrice) || 0) - (Number(tradePrice) || 0)) * (Number(quantity) || 0)
 }
 
+export function medicineScheduleLabel(medicine = {}) {
+  const parts = []
+  if (medicine.morning) parts.push('Morning')
+  if (medicine.noon) parts.push('Noon')
+  if (medicine.night) parts.push('Night')
+  return parts.length ? parts.join(' · ') : '—'
+}
+
 export function toCsv(rows) {
   return rows
     .map((row) =>

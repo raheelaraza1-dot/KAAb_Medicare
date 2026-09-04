@@ -3,7 +3,7 @@ import { useNavigate } from '../../../lib/react-router-dom.jsx'
 import { Save } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { PageTransition } from '../components/ui.jsx'
-import { emptyMed, MedicineFormRows } from '../components/MedicineFormRows.jsx'
+import { emptyMed, medToPayload, MedicineFormRows } from '../components/MedicineFormRows.jsx'
 import { api } from '../api/client.js'
 import { formatMoney, lineProfit } from '../lib/format.js'
 
@@ -34,14 +34,7 @@ export default function AddPatientPage() {
 
       const created = await api.createPatient(body)
       const id = created.data._id
-      const medicines = meds
-        .filter((m) => m.medicineName.trim())
-        .map((m) => ({
-          medicineName: m.medicineName.trim(),
-          tradePrice: Number(m.tradePrice) || 0,
-          sellingPrice: Number(m.sellingPrice) || 0,
-          quantity: Number(m.quantity) || 1,
-        }))
+      const medicines = meds.filter((m) => m.medicineName.trim()).map(medToPayload)
 
       if (medicines.length || form.diagnosis.trim() || form.notes.trim()) {
         await api.createVisit(id, {

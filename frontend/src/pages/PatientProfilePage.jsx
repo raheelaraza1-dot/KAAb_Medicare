@@ -17,10 +17,10 @@ import {
 } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { Avatar, EmptyState, Loader, PageTransition } from '../components/ui.jsx'
-import { emptyMed, MedicineFormRows } from '../components/MedicineFormRows.jsx'
+import { emptyMed, medFromVisit, medToPayload, MedicineFormRows } from '../components/MedicineFormRows.jsx'
 import { PrintPrescriptionButton } from '../components/PrescriptionPrint.jsx'
 import { api } from '../api/client.js'
-import { formatDate, formatDateTime, formatMoney, formatTime, patientCode } from '../lib/format.js'
+import { formatDate, formatDateTime, formatMoney, formatTime, medicineScheduleLabel, patientCode } from '../lib/format.js'
 
 export default function PatientProfilePage() {
   const { id } = useParams()
@@ -89,14 +89,7 @@ export default function PatientProfilePage() {
       const payload = {
         diagnosis: visitForm.diagnosis.trim() || undefined,
         notes: visitForm.notes.trim() || undefined,
-        medicines: meds
-          .filter((m) => m.medicineName.trim())
-          .map((m) => ({
-            medicineName: m.medicineName.trim(),
-            tradePrice: Number(m.tradePrice) || 0,
-            sellingPrice: Number(m.sellingPrice) || 0,
-            quantity: Number(m.quantity) || 1,
-          })),
+        medicines: meds.filter((m) => m.medicineName.trim()).map(medToPayload),
       }
       if (editingVisit) {
         await api.updateVisit(id, editingVisit._id, payload)
@@ -121,16 +114,7 @@ export default function PatientProfilePage() {
       diagnosis: visit.diagnosis || '',
       notes: visit.notes || '',
     })
-    setMeds(
-      (visit.medicines || []).length > 0
-        ? visit.medicines.map((m) => ({
-            medicineName: m.medicineName,
-            tradePrice: String(m.tradePrice),
-            sellingPrice: String(m.sellingPrice),
-            quantity: String(m.quantity),
-          }))
-        : [emptyMed()],
-    )
+    setMeds((visit.medicines || []).length > 0 ? visit.medicines.map(medFromVisit) : [emptyMed()])
   }
 
   function closeVisitModal() {
@@ -367,6 +351,7 @@ export default function PatientProfilePage() {
                               <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-400">
                                 <tr>
                                   <th className="px-4 py-2.5 font-medium">Medicine</th>
+                                  <th className="px-4 py-2.5 font-medium">Schedule</th>
                                   <th className="px-4 py-2.5 font-medium">Qty</th>
                                   <th className="px-4 py-2.5 font-medium">Trade</th>
                                   <th className="px-4 py-2.5 font-medium">Selling</th>
@@ -382,6 +367,7 @@ export default function PatientProfilePage() {
                                         {m.medicineName}
                                       </span>
                                     </td>
+                                    <td className="px-4 py-2.5 text-gray-600">{medicineScheduleLabel(m)}</td>
                                     <td className="px-4 py-2.5 text-gray-600">{m.quantity}</td>
                                     <td className="px-4 py-2.5 text-gray-600">{formatMoney(m.tradePrice)}</td>
                                     <td className="px-4 py-2.5 text-gray-600">{formatMoney(m.sellingPrice)}</td>

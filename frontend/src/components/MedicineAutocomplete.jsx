@@ -77,7 +77,7 @@ export function MedicineAutocomplete({ value, onChange, onSelect, placeholder = 
   }
 
   return (
-    <div ref={wrapRef} className={`relative ${className}`}>
+    <div ref={wrapRef} className={`relative min-w-0 ${className}`}>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}

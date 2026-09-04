@@ -1,5 +1,7 @@
 import { Logo } from './Logo.jsx'
 
+import { medicineScheduleLabel } from '../lib/format.js'
+
 export function formatPrescriptionDate(date = new Date()) {
   return new Date(date).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -41,6 +43,7 @@ export function PrescriptionDocument({ patient, visit, printDate = new Date() })
               <th className="w-12 px-4 py-3 text-center font-semibold">#</th>
               <th className="px-4 py-3 font-semibold">Medicine</th>
               <th className="w-20 px-4 py-3 text-center font-semibold">Qty</th>
+              <th className="px-4 py-3 font-semibold">Schedule</th>
             </tr>
           </thead>
           <tbody>
@@ -50,11 +53,12 @@ export function PrescriptionDocument({ patient, visit, printDate = new Date() })
                   <td className="px-4 py-3 text-center text-gray-500">{i + 1}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{m.medicineName}</td>
                   <td className="px-4 py-3 text-center text-gray-700">{m.quantity ?? 1}</td>
+                  <td className="px-4 py-3 text-gray-700">{medicineScheduleLabel(m)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={3} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
                   No medicines prescribed
                 </td>
               </tr>
