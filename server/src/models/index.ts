@@ -14,16 +14,32 @@ const MedicineSchema = new Schema({
 const PatientSchema = new Schema({
   name: { type: String, required: true, trim: true }, phone: { type: String, trim: true, default: '' },
   age: { type: Number, min: 0, max: 150 }, gender: String, address: String,
-  createdAt: { type: Date, default: Date.now }, totalVisits: { type: Number, default: 0 }, totalProfit: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  totalVisits: { type: Number, default: 0 },
+  totalProfit: { type: Number, default: 0 },
+  totalTradePrice: { type: Number, default: 0 },
+  totalSellingPrice: { type: Number, default: 0 },
 }, { timestamps: true })
 PatientSchema.index({ name: 'text', phone: 'text' }, { name: 'patient_search_text' })
 
 const VisitSchema = new Schema({
   patientId: { type: Types.ObjectId, ref: 'Patient', required: true, index: true }, visitDate: { type: Date, default: Date.now },
-  diagnosis: String, notes: String, medicines: { type: [MedicineSchema], default: [] }, visitTotalProfit: { type: Number, default: 0 },
+  diagnosis: String,
+  notes: String,
+  medicines: { type: [MedicineSchema], default: [] },
+  visitTotalProfit: { type: Number, default: 0 },
+  visitTotalTradePrice: { type: Number, default: 0 },
+  visitTotalSellingPrice: { type: Number, default: 0 },
 })
 VisitSchema.index({ patientId: 1, visitDate: -1 })
-VisitSchema.pre('validate', function() { this.medicines.forEach((m: any) => { m.profit = (m.sellingPrice - m.tradePrice) * m.quantity }); this.visitTotalProfit = this.medicines.reduce((sum: number, m: any) => sum + m.profit, 0) })
+VisitSchema.pre('validate', function () {
+  this.medicines.forEach((m: any) => {
+    m.profit = (m.sellingPrice - m.tradePrice) * m.quantity
+  })
+  this.visitTotalProfit = this.medicines.reduce((sum: number, m: any) => sum + m.profit, 0)
+  this.visitTotalTradePrice = this.medicines.reduce((sum: number, m: any) => sum + m.tradePrice * m.quantity, 0)
+  this.visitTotalSellingPrice = this.medicines.reduce((sum: number, m: any) => sum + m.sellingPrice * m.quantity, 0)
+})
 
 const AdminSchema = new Schema({ email: { type: String, unique: true, required: true, lowercase: true }, passwordHash: { type: String, required: true } })
 export const Patient = models.Patient || model('Patient', PatientSchema)

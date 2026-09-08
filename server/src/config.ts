@@ -27,6 +27,7 @@ if (!global.__mongooseCache) global.__mongooseCache = cached
 
 let indexesSynced = false
 let adminSeeded = false
+let aggregatesBackfilled = false
 
 export async function connectDatabase() {
   if (!config.mongoUri) throw new Error('MONGODB_URI is required in environment variables')
@@ -45,6 +46,17 @@ export async function connectDatabase() {
   if (!indexesSynced) {
     await Patient.syncIndexes().catch(() => {})
     indexesSynced = true
+  }
+
+  if (!aggregatesBackfilled) {
+    const needsBackfill = await Patient.exists({
+      $or: [{ totalTradePrice: { $exists: false } }, { totalSellingPrice: { $exists: false } }],
+    })
+    if (needsBackfill) {
+      const patients = await Patient.find().select('_id')
+      await Promise.all(patients.map((p) => syncPatientAggregates(String(p._id))))
+    }
+    aggregatesBackfilled = true
   }
 
   if (!adminSeeded && config.adminPassword) {
@@ -76,10 +88,16 @@ export const isDbReady = () => mongoose.connection.readyState === 1
 
 export const roundMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100
 export const lineProfit = (sellingPrice: number, tradePrice: number, quantity: number) => roundMoney((sellingPrice - tradePrice) * quantity)
+export const visitTradeTotal = (medicines: { tradePrice: number; quantity: number }[]) =>
+  roundMoney(medicines.reduce((sum, m) => sum + m.tradePrice * m.quantity, 0))
+export const visitSellingTotal = (medicines: { sellingPrice: number; quantity: number }[]) =>
+  roundMoney(medicines.reduce((sum, m) => sum + m.sellingPrice * m.quantity, 0))
 
 export async function syncPatientAggregates(patientId: string) {
   const visits = await Visit.find({ patientId })
   const totalVisits = visits.length
   const totalProfit = roundMoney(visits.reduce((sum, v) => sum + v.visitTotalProfit, 0))
-  await Patient.updateOne({ _id: patientId }, { totalVisits, totalProfit })
+  const totalTradePrice = roundMoney(visits.reduce((sum, v) => sum + visitTradeTotal(v.medicines), 0))
+  const totalSellingPrice = roundMoney(visits.reduce((sum, v) => sum + visitSellingTotal(v.medicines), 0))
+  await Patient.updateOne({ _id: patientId }, { totalVisits, totalProfit, totalTradePrice, totalSellingPrice })
 }

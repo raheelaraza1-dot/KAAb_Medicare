@@ -186,7 +186,37 @@ router.get('/reports/summary', async (req: Request, res: Response, next: NextFun
     const [summary, top, byDay] = await Promise.all([
       Visit.aggregate([
         { $match: { visitDate: { $gte: from, $lte: to } } },
-        { $group: { _id: null, totalProfit: { $sum: '$visitTotalProfit' }, totalVisits: { $sum: 1 } } },
+        {
+          $addFields: {
+            _tradeTotal: {
+              $sum: {
+                $map: {
+                  input: '$medicines',
+                  as: 'm',
+                  in: { $multiply: ['$$m.tradePrice', '$$m.quantity'] },
+                },
+              },
+            },
+            _sellingTotal: {
+              $sum: {
+                $map: {
+                  input: '$medicines',
+                  as: 'm',
+                  in: { $multiply: ['$$m.sellingPrice', '$$m.quantity'] },
+                },
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalProfit: { $sum: '$visitTotalProfit' },
+            totalTradePrice: { $sum: '$_tradeTotal' },
+            totalSellingPrice: { $sum: '$_sellingTotal' },
+            totalVisits: { $sum: 1 },
+          },
+        },
       ]),
       Visit.aggregate([
         { $match: { visitDate: { $gte: from, $lte: to } } },
@@ -213,7 +243,13 @@ router.get('/reports/summary', async (req: Request, res: Response, next: NextFun
         { $sort: { _id: 1 } },
       ]),
     ])
-    res.json({ data: { summary: summary[0] || { totalProfit: 0, totalVisits: 0 }, topMedicines: top, byDay } })
+    res.json({
+      data: {
+        summary: summary[0] || { totalProfit: 0, totalTradePrice: 0, totalSellingPrice: 0, totalVisits: 0 },
+        topMedicines: top,
+        byDay,
+      },
+    })
   } catch (e) {
     next(e)
   }

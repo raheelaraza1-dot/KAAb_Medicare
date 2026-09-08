@@ -131,7 +131,9 @@ export default function PatientsPage() {
                     <p className="text-xs text-gray-500">ID: {patientCode(p._id)}{p.phone ? ` · ${p.phone}` : ''}</p>
                     <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                       <span className="text-gray-600">{formatNumber(p.totalVisits)} visits</span>
-                      <span className="font-semibold text-emerald-700">{formatMoney(p.totalProfit)}</span>
+                      <span className="text-gray-700">Trade: {formatMoney(p.totalTradePrice)}</span>
+                      <span className="text-gray-700">Selling: {formatMoney(p.totalSellingPrice)}</span>
+                      <span className="font-semibold text-emerald-700">Profit: {formatMoney(p.totalProfit)}</span>
                     </div>
                   </div>
                   <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-gray-400" />
@@ -146,6 +148,8 @@ export default function PatientsPage() {
                     <th className="px-5 py-3 font-medium">Contact Number</th>
                     <th className="px-5 py-3 font-medium">Registered</th>
                     <th className="px-5 py-3 font-medium">Total Visits</th>
+                    <th className="px-5 py-3 font-medium">Total Trade Price</th>
+                    <th className="px-5 py-3 font-medium">Total Selling Price</th>
                     <th className="px-5 py-3 font-medium">Profit Generated</th>
                     <th className="px-5 py-3 font-medium">Actions</th>
                   </tr>
@@ -172,7 +176,9 @@ export default function PatientsPage() {
                       <td className="px-5 py-3 text-gray-600">{p.phone || '—'}</td>
                       <td className="px-5 py-3 text-gray-600">{formatDate(p.createdAt)}</td>
                       <td className="px-5 py-3 text-gray-900">{formatNumber(p.totalVisits)}</td>
-                      <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalProfit)}</td>
+                      <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalTradePrice)}</td>
+                      <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalSellingPrice)}</td>
+                      <td className="px-5 py-3 font-medium text-emerald-700">{formatMoney(p.totalProfit)}</td>
                       <td className="px-5 py-3">
                         <Link
                           to={`/patients/${p._id}`}
