@@ -58,9 +58,12 @@ export const api = {
   health: () => request('/health', { token: null }),
   login: (email, password) =>
     request('/api/auth/login', { method: 'POST', body: { email, password }, token: null }),
-  patients: (search = '') => {
-    const q = search.trim() ? `?search=${encodeURIComponent(search.trim())}` : ''
-    return request(`/api/patients${q}`)
+  patients: (search = '', { limit } = {}) => {
+    const params = new URLSearchParams()
+    if (search.trim()) params.set('search', search.trim())
+    if (limit) params.set('limit', String(limit))
+    const q = params.toString()
+    return request(`/api/patients${q ? `?${q}` : ''}`)
   },
   createPatient: (data) => request('/api/patients', { method: 'POST', body: data }),
   patient: (id) => request(`/api/patients/${id}`),

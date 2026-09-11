@@ -9,6 +9,10 @@ import { auth } from '../middleware/auth'
 
 const router = Router()
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 const medicine = z.object({
   medicineName: z.string().min(1),
   tradePrice: z.number().nonnegative(),
@@ -67,8 +71,20 @@ router.post('/patients', async (req: Request, res: Response, next: NextFunction)
 router.get('/patients', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const search = String(req.query.search || '').trim()
-    const q = search ? { $text: { $search: search } } : {}
-    res.json({ data: await Patient.find(q).sort({ createdAt: -1 }) })
+    if (search) {
+      const escaped = escapeRegex(search)
+      const filter = {
+        $or: [
+          { name: { $regex: escaped, $options: 'i' } },
+          { phone: { $regex: escaped, $options: 'i' } },
+        ],
+      }
+      let query = Patient.find(filter).sort({ name: 1 })
+      const limit = Number(req.query.limit)
+      if (Number.isFinite(limit) && limit > 0) query = query.limit(Math.min(limit, 25))
+      return res.json({ data: await query })
+    }
+    res.json({ data: await Patient.find({}).sort({ createdAt: -1 }) })
   } catch (e) {
     next(e)
   }

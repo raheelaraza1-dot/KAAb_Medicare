@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from '../../../lib/react-router-dom.jsx'
 import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
-import { CalendarDays, ChevronDown, Download, Pill, TrendingUp, UserPlus, Users, Wallet } from 'lucide-react'
+import { CalendarDays, ChevronDown, Download, Pill, ShoppingBag, Tag, TrendingUp, UserPlus, Users, Wallet } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { Avatar, Badge, EmptyState, Loader, PageTransition, Pagination, StatCard } from '../components/ui.jsx'
 import { api } from '../api/client.js'
@@ -125,7 +125,11 @@ export default function DashboardPage() {
       ['Total patients', patients.length],
       ['Visits', daySummary?.summary?.totalVisits || 0],
       ['Profit', daySummary?.summary?.totalProfit || 0],
+      ['Trading price', daySummary?.summary?.totalTradePrice || 0],
+      ['Selling price', daySummary?.summary?.totalSellingPrice || 0],
       ['Monthly profit', month?.summary?.totalProfit || 0],
+      ['Monthly trading price', month?.summary?.totalTradePrice || 0],
+      ['Monthly selling price', month?.summary?.totalSellingPrice || 0],
     ]
     downloadText(`kaab-medicare-overview-${dateInputValue}.csv`, toCsv(rows))
   }
@@ -226,7 +230,7 @@ export default function DashboardPage() {
           <Loader />
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               <StatCard
                 icon={<Users className="h-5 w-5" />}
                 label="Total Patients"
@@ -253,10 +257,38 @@ export default function DashboardPage() {
                 }
               />
               <StatCard
+                delay={0.12}
+                icon={<ShoppingBag className="h-5 w-5" />}
+                label={isToday ? "Today's Trading Price" : 'Trading Price'}
+                value={formatMoney(daySummary?.summary?.totalTradePrice)}
+                badge={<Badge>{formatDayLabel(selectedDate)}</Badge>}
+              />
+              <StatCard
+                delay={0.14}
+                icon={<Tag className="h-5 w-5" />}
+                label={isToday ? "Today's Selling Price" : 'Selling Price'}
+                value={formatMoney(daySummary?.summary?.totalSellingPrice)}
+                badge={<Badge>{formatDayLabel(selectedDate)}</Badge>}
+              />
+              <StatCard
                 delay={0.15}
                 icon={<TrendingUp className="h-5 w-5" />}
                 label="Monthly Profit"
                 value={formatMoney(month?.summary?.totalProfit)}
+                badge={<Badge tone="green">This month</Badge>}
+              />
+              <StatCard
+                delay={0.17}
+                icon={<ShoppingBag className="h-5 w-5" />}
+                label="Monthly Trading Price"
+                value={formatMoney(month?.summary?.totalTradePrice)}
+                badge={<Badge tone="green">This month</Badge>}
+              />
+              <StatCard
+                delay={0.19}
+                icon={<Tag className="h-5 w-5" />}
+                label="Monthly Selling Price"
+                value={formatMoney(month?.summary?.totalSellingPrice)}
                 badge={<Badge tone="green">This month</Badge>}
               />
             </div>

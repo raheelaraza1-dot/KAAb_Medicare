@@ -4,6 +4,7 @@ import { Save } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { PageTransition } from '../components/ui.jsx'
 import { emptyMed, medToPayload, MedicineFormRows } from '../components/MedicineFormRows.jsx'
+import { PatientNameAutocomplete } from '../components/PatientNameAutocomplete.jsx'
 import { api } from '../api/client.js'
 import { formatMoney, lineProfit } from '../lib/format.js'
 
@@ -13,6 +14,7 @@ export default function AddPatientPage() {
   const [meds, setMeds] = useState([emptyMed()])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [existingMatch, setExistingMatch] = useState(null)
 
   const totalProfit = useMemo(
     () => meds.reduce((sum, m) => sum + lineProfit(m.sellingPrice, m.tradePrice, m.quantity), 0),
@@ -66,14 +68,45 @@ export default function AddPatientPage() {
             <h3 className="mb-4 text-lg font-semibold text-gray-900">Patient Information</h3>
             <label className="block text-sm font-medium text-gray-900">
               Full Name
-              <input
-                required
+              <PatientNameAutocomplete
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="e.g. Jane Doe"
-                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-black"
+                onChange={(name) => {
+                  setForm({ ...form, name })
+                  if (existingMatch && name.trim().toLowerCase() !== existingMatch.name.trim().toLowerCase()) {
+                    setExistingMatch(null)
+                  }
+                }}
+                onSelectExisting={(patient) => {
+                  setExistingMatch(patient)
+                  setForm({
+                    name: patient.name || '',
+                    phone: patient.phone || '',
+                    age: patient.age != null ? String(patient.age) : '',
+                    gender: patient.gender || '',
+                    address: patient.address || '',
+                    diagnosis: '',
+                    notes: '',
+                  })
+                }}
               />
             </label>
+            <p className="mt-1.5 text-xs text-gray-500">
+              After 3 characters, matching names appear. Click a name to use that patient, or keep typing to add someone new.
+            </p>
+            {existingMatch && (
+              <div className="mt-3 flex flex-col gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-emerald-900">
+                  <span className="font-semibold">{existingMatch.name}</span> is already in the clinic. Open their record to add a visit.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/patients/${existingMatch._id}`)}
+                  className="shrink-0 rounded-xl bg-black px-3 py-2 text-sm font-semibold text-white"
+                >
+                  Open patient
+                </button>
+              </div>
+            )}
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               <label className="text-sm font-medium text-gray-900">
                 Phone Number <span className="text-xs font-normal text-gray-400">(Optional)</span>
