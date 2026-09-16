@@ -50,7 +50,11 @@ export async function connectDatabase() {
 
   if (!aggregatesBackfilled) {
     const needsBackfill = await Patient.exists({
-      $or: [{ totalTradePrice: { $exists: false } }, { totalSellingPrice: { $exists: false } }],
+      $or: [
+        { totalTradePrice: { $exists: false } },
+        { totalSellingPrice: { $exists: false } },
+        { totalCheckupFee: { $exists: false } },
+      ],
     })
     if (needsBackfill) {
       const patients = await Patient.find().select('_id')
@@ -80,6 +84,7 @@ export async function disconnectDatabase() {
   cached.conn = null
   cached.promise = null
   indexesSynced = false
+  aggregatesBackfilled = false
 }
 export function requireConfig() {
   if (!config.jwtSecret) throw new Error('JWT_SECRET is required')
@@ -93,11 +98,16 @@ export const visitTradeTotal = (medicines: { tradePrice: number; quantity: numbe
 export const visitSellingTotal = (medicines: { sellingPrice: number; quantity: number }[]) =>
   roundMoney(medicines.reduce((sum, m) => sum + m.sellingPrice * m.quantity, 0))
 
+export function visitCheckupFee(visit: { checkupFee?: number }) {
+  return roundMoney(Number(visit.checkupFee) || 0)
+}
+
 export async function syncPatientAggregates(patientId: string) {
   const visits = await Visit.find({ patientId })
   const totalVisits = visits.length
   const totalProfit = roundMoney(visits.reduce((sum, v) => sum + v.visitTotalProfit, 0))
   const totalTradePrice = roundMoney(visits.reduce((sum, v) => sum + visitTradeTotal(v.medicines), 0))
   const totalSellingPrice = roundMoney(visits.reduce((sum, v) => sum + visitSellingTotal(v.medicines), 0))
-  await Patient.updateOne({ _id: patientId }, { totalVisits, totalProfit, totalTradePrice, totalSellingPrice })
+  const totalCheckupFee = roundMoney(visits.reduce((sum, v) => sum + visitCheckupFee(v), 0))
+  await Patient.updateOne({ _id: patientId }, { totalVisits, totalProfit, totalTradePrice, totalSellingPrice, totalCheckupFee })
 }

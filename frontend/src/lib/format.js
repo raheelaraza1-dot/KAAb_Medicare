@@ -132,6 +132,26 @@ export function lineProfit(sellingPrice, tradePrice, quantity) {
   return ((Number(sellingPrice) || 0) - (Number(tradePrice) || 0)) * (Number(quantity) || 0)
 }
 
+export function visitCheckupFee(visit = {}) {
+  return Number(visit.checkupFee) || 0
+}
+
+export function visitTradeTotal(visit = {}) {
+  if (visit.visitTotalTradePrice != null) return Number(visit.visitTotalTradePrice) || 0
+  return (visit.medicines || []).reduce(
+    (sum, m) => sum + (Number(m.tradePrice) || 0) * (Number(m.quantity) || 0),
+    0,
+  )
+}
+
+export function visitSellingTotal(visit = {}) {
+  if (visit.visitTotalSellingPrice != null) return Number(visit.visitTotalSellingPrice) || 0
+  return (visit.medicines || []).reduce(
+    (sum, m) => sum + (Number(m.sellingPrice) || 0) * (Number(m.quantity) || 0),
+    0,
+  )
+}
+
 export function medicineScheduleLabel(medicine = {}) {
   const parts = []
   if (medicine.morning) parts.push('Morning')

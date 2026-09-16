@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from '../../../lib/react-router-dom.jsx'
-import { motion } from '../../../lib/framer-motion.jsx'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { ChevronRight, Filter, Search } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { Avatar, EmptyState, Loader, PageTransition, Pagination } from '../components/ui.jsx'
@@ -133,6 +133,7 @@ export default function PatientsPage() {
                       <span className="text-gray-600">{formatNumber(p.totalVisits)} visits</span>
                       <span className="text-gray-700">Trade: {formatMoney(p.totalTradePrice)}</span>
                       <span className="text-gray-700">Selling: {formatMoney(p.totalSellingPrice)}</span>
+                      <span className="text-gray-700">Checkup: {formatMoney(p.totalCheckupFee)}</span>
                       <span className="font-semibold text-emerald-700">Profit: {formatMoney(p.totalProfit)}</span>
                     </div>
                   </div>
@@ -150,6 +151,7 @@ export default function PatientsPage() {
                     <th className="px-5 py-3 font-medium">Total Visits</th>
                     <th className="px-5 py-3 font-medium">Total Trade Price</th>
                     <th className="px-5 py-3 font-medium">Total Selling Price</th>
+                    <th className="px-5 py-3 font-medium">Total Checkup Fee</th>
                     <th className="px-5 py-3 font-medium">Profit Generated</th>
                     <th className="px-5 py-3 font-medium">Actions</th>
                   </tr>
@@ -178,6 +180,7 @@ export default function PatientsPage() {
                       <td className="px-5 py-3 text-gray-900">{formatNumber(p.totalVisits)}</td>
                       <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalTradePrice)}</td>
                       <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalSellingPrice)}</td>
+                      <td className="px-5 py-3 font-medium text-gray-900">{formatMoney(p.totalCheckupFee)}</td>
                       <td className="px-5 py-3 font-medium text-emerald-700">{formatMoney(p.totalProfit)}</td>
                       <td className="px-5 py-3">
                         <Link

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate } from '../../../lib/react-router-dom.jsx'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
+import { Link, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { CalendarDays, ChevronDown, Download, Pill, ShoppingBag, Tag, TrendingUp, UserPlus, Users, Wallet } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { Avatar, Badge, EmptyState, Loader, PageTransition, Pagination, StatCard } from '../components/ui.jsx'

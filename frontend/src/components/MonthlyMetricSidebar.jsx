@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronRight, X } from 'lucide-react'
 import { api } from '../api/client.js'
 import { formatMoney, getMonthsOfYear, isoDate } from '../lib/format.js'

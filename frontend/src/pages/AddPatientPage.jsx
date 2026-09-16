@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from '../../../lib/react-router-dom.jsx'
+import { useNavigate } from 'react-router-dom'
 import { Save } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { PageTransition } from '../components/ui.jsx'
@@ -10,7 +10,7 @@ import { formatMoney, lineProfit } from '../lib/format.js'
 
 export default function AddPatientPage() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', phone: '', age: '', gender: '', address: '', diagnosis: '', notes: '' })
+  const [form, setForm] = useState({ name: '', phone: '', age: '', gender: '', address: '', diagnosis: '', notes: '', checkupFee: '' })
   const [meds, setMeds] = useState([emptyMed()])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -38,10 +38,11 @@ export default function AddPatientPage() {
       const id = created.data._id
       const medicines = meds.filter((m) => m.medicineName.trim()).map(medToPayload)
 
-      if (medicines.length || form.diagnosis.trim() || form.notes.trim()) {
+      if (medicines.length || form.diagnosis.trim() || form.notes.trim() || Number(form.checkupFee)) {
         await api.createVisit(id, {
           diagnosis: form.diagnosis.trim() || undefined,
           notes: form.notes.trim() || undefined,
+          checkupFee: Number(form.checkupFee) || 0,
           medicines,
         })
       }
@@ -178,6 +179,18 @@ export default function AddPatientPage() {
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   placeholder="Optional clinical notes"
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
+                />
+              </label>
+              <label className="text-sm font-medium text-gray-900 md:col-span-2">
+                Checkup fee
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.checkupFee}
+                  onChange={(e) => setForm({ ...form, checkupFee: e.target.value })}
+                  placeholder="0"
                   className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
               </label>

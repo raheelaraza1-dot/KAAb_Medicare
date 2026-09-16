@@ -1,4 +1,4 @@
-import { Link } from '../../../lib/react-router-dom.jsx'
+import { Link } from 'react-router-dom'
 import { Printer } from 'lucide-react'
 
 export function PrintPrescriptionButton({ patient, visit, className = '', disabled = false }) {

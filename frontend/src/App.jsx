@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
-import { Navigate, Route, Routes } from '../../lib/react-router-dom.jsx'
-import { AnimatePresence } from '../../lib/framer-motion.jsx'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { useAuth } from './context/AuthContext.jsx'
 
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'))

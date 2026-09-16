@@ -1,5 +1,5 @@
-import { NavLink, useLocation, useNavigate } from '../../../lib/react-router-dom.jsx'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   BarChart3,
   Bell,

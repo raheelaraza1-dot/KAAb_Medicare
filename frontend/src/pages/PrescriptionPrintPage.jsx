@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from '../../../lib/react-router-dom.jsx'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Printer } from 'lucide-react'
 import { PrescriptionDocument } from '../components/PrescriptionDocument.jsx'
 import { Loader, PageTransition } from '../components/ui.jsx'

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from '../../../lib/react-router-dom.jsx'
+import { useNavigate } from 'react-router-dom'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { PageTransition } from '../components/ui.jsx'
 import { API_URL, api } from '../api/client.js'

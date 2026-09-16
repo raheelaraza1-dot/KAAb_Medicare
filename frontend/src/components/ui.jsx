@@ -1,4 +1,4 @@
-import { motion } from '../../../lib/framer-motion.jsx'
+import { motion } from 'framer-motion'
 
 export const fadeUp = {
   initial: { opacity: 0, y: 16 },

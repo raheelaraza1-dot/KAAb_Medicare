@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from '../../../lib/react-router-dom.jsx'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Eye, EyeOff, Lock, Mail, ShieldCheck } from 'lucide-react'
 import { Logo, LogoMark } from '../components/Logo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'

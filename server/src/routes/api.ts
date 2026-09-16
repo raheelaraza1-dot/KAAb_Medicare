@@ -35,6 +35,7 @@ const visit = z.object({
   visitDate: z.coerce.date().optional(),
   diagnosis: z.string().optional(),
   notes: z.string().optional(),
+  checkupFee: z.number().nonnegative().optional().default(0),
   medicines: z.array(medicine).default([]),
 })
 
@@ -147,6 +148,7 @@ router.put('/patients/:patientId/visits/:visitId', async (req: Request, res: Res
     if (data.visitDate !== undefined) v.visitDate = data.visitDate
     if (data.diagnosis !== undefined) v.diagnosis = data.diagnosis
     if (data.notes !== undefined) v.notes = data.notes
+    if (data.checkupFee !== undefined) v.checkupFee = data.checkupFee
     if (data.medicines !== undefined) v.medicines = data.medicines
     await v.save()
     await syncPatientAggregates(String(req.params.patientId))

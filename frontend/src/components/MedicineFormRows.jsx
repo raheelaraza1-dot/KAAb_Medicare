@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Plus, Trash2 } from 'lucide-react'
 import { MedicineAutocomplete } from './MedicineAutocomplete.jsx'
 import { formatMoney, lineProfit } from '../lib/format.js'

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from '../../../lib/react-router-dom.jsx'
-import { AnimatePresence, motion } from '../../../lib/framer-motion.jsx'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowLeft,
   Calendar,
@@ -20,7 +20,7 @@ import { Avatar, EmptyState, Loader, PageTransition } from '../components/ui.jsx
 import { emptyMed, medFromVisit, medToPayload, MedicineFormRows } from '../components/MedicineFormRows.jsx'
 import { PrintPrescriptionButton } from '../components/PrescriptionPrint.jsx'
 import { api } from '../api/client.js'
-import { formatDate, formatDateTime, formatMoney, formatTime, medicineScheduleLabel, patientCode } from '../lib/format.js'
+import { formatDate, formatDateTime, formatMoney, formatTime, medicineScheduleLabel, patientCode, visitCheckupFee, visitSellingTotal, visitTradeTotal } from '../lib/format.js'
 
 export default function PatientProfilePage() {
   const { id } = useParams()
@@ -32,7 +32,7 @@ export default function PatientProfilePage() {
   const [showVisit, setShowVisit] = useState(false)
   const [editingVisit, setEditingVisit] = useState(null)
   const [showEdit, setShowEdit] = useState(false)
-  const [visitForm, setVisitForm] = useState({ diagnosis: '', notes: '' })
+  const [visitForm, setVisitForm] = useState({ diagnosis: '', notes: '', checkupFee: '' })
   const [meds, setMeds] = useState([emptyMed()])
   const [edit, setEdit] = useState({ name: '', phone: '', age: '', gender: '', address: '' })
   const [saving, setSaving] = useState(false)
@@ -89,6 +89,7 @@ export default function PatientProfilePage() {
       const payload = {
         diagnosis: visitForm.diagnosis.trim() || undefined,
         notes: visitForm.notes.trim() || undefined,
+        checkupFee: Number(visitForm.checkupFee) || 0,
         medicines: meds.filter((m) => m.medicineName.trim()).map(medToPayload),
       }
       if (editingVisit) {
@@ -98,7 +99,7 @@ export default function PatientProfilePage() {
         await api.createVisit(id, payload)
         setShowVisit(false)
       }
-      setVisitForm({ diagnosis: '', notes: '' })
+      setVisitForm({ diagnosis: '', notes: '', checkupFee: '' })
       setMeds([emptyMed()])
       await reload()
     } catch (err) {
@@ -113,6 +114,7 @@ export default function PatientProfilePage() {
     setVisitForm({
       diagnosis: visit.diagnosis || '',
       notes: visit.notes || '',
+      checkupFee: visit.checkupFee ? String(visit.checkupFee) : '',
     })
     setMeds((visit.medicines || []).length > 0 ? visit.medicines.map(medFromVisit) : [emptyMed()])
   }
@@ -120,7 +122,7 @@ export default function PatientProfilePage() {
   function closeVisitModal() {
     setShowVisit(false)
     setEditingVisit(null)
-    setVisitForm({ diagnosis: '', notes: '' })
+    setVisitForm({ diagnosis: '', notes: '', checkupFee: '' })
     setMeds([emptyMed()])
   }
 
@@ -178,6 +180,10 @@ export default function PatientProfilePage() {
   }
 
   const patient = data?.patient
+  const patientCheckupTotal =
+    patient?.totalCheckupFee != null
+      ? patient.totalCheckupFee
+      : (data?.visits || []).reduce((sum, v) => sum + visitCheckupFee(v), 0)
 
   return (
     <AppLayout>
@@ -243,17 +249,29 @@ export default function PatientProfilePage() {
                   </div>
                 </div>
               </div>
-              <div className="grid gap-0 sm:grid-cols-3">
-                <div className="border-b border-gray-100 p-6 sm:border-b-0 sm:border-r">
+              <div className="grid gap-0 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="border-b border-gray-100 p-6 sm:border-r">
                   <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Registered</p>
                   <p className="mt-2 flex items-center gap-2 text-lg font-semibold">
                     <Calendar className="h-4 w-4 text-gray-400" />
                     {formatDate(patient.createdAt)}
                   </p>
                 </div>
-                <div className="border-b border-gray-100 p-6 sm:border-b-0 sm:border-r">
+                <div className="border-b border-gray-100 p-6 lg:border-r">
                   <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Total visits</p>
                   <p className="mt-2 text-3xl font-extrabold text-gray-900">{patient.totalVisits || 0}</p>
+                </div>
+                <div className="border-b border-gray-100 p-6 sm:border-r lg:border-r-0">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Total trade price</p>
+                  <p className="mt-2 text-3xl font-extrabold text-gray-900">{formatMoney(patient.totalTradePrice)}</p>
+                </div>
+                <div className="border-b border-gray-100 p-6 sm:border-b-0 lg:border-b-0 lg:border-r">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Total selling price</p>
+                  <p className="mt-2 text-3xl font-extrabold text-gray-900">{formatMoney(patient.totalSellingPrice)}</p>
+                </div>
+                <div className="border-b border-gray-100 p-6 sm:border-b-0 sm:border-r lg:border-b-0">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Total checkup fee</p>
+                  <p className="mt-2 text-3xl font-extrabold text-gray-900">{formatMoney(patientCheckupTotal)}</p>
                 </div>
                 <div className="p-6">
                   <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Profit generated</p>
@@ -338,9 +356,23 @@ export default function PatientProfilePage() {
                                 <Trash2 className="h-4 w-4" />
                               </button>
                             </div>
-                            <div className="rounded-xl bg-emerald-50 px-4 py-2 text-right">
-                              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Visit profit</p>
-                              <p className="text-xl font-extrabold text-emerald-700">{formatMoney(v.visitTotalProfit)}</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="rounded-xl bg-gray-50 px-3 py-2 text-right">
+                                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Trade</p>
+                                <p className="text-sm font-extrabold text-gray-900">{formatMoney(visitTradeTotal(v))}</p>
+                              </div>
+                              <div className="rounded-xl bg-gray-50 px-3 py-2 text-right">
+                                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Selling</p>
+                                <p className="text-sm font-extrabold text-gray-900">{formatMoney(visitSellingTotal(v))}</p>
+                              </div>
+                              <div className="rounded-xl bg-sky-50 px-3 py-2 text-right">
+                                <p className="text-[10px] font-semibold uppercase tracking-wide text-sky-700">Checkup fee</p>
+                                <p className="text-sm font-extrabold text-sky-800">{formatMoney(visitCheckupFee(v))}</p>
+                              </div>
+                              <div className="rounded-xl bg-emerald-50 px-3 py-2 text-right">
+                                <p className="text-[10px] font-semibold uppercase tracking-wide text-emerald-600">Visit profit</p>
+                                <p className="text-sm font-extrabold text-emerald-700">{formatMoney(v.visitTotalProfit)}</p>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -375,6 +407,14 @@ export default function PatientProfilePage() {
                                   </tr>
                                 ))}
                               </tbody>
+                              <tfoot>
+                                <tr className="border-t border-gray-200 bg-gray-50 text-sm font-semibold">
+                                  <td className="px-4 py-2.5" colSpan={3}>Visit totals</td>
+                                  <td className="px-4 py-2.5 text-gray-900">{formatMoney(visitTradeTotal(v))}</td>
+                                  <td className="px-4 py-2.5 text-gray-900">{formatMoney(visitSellingTotal(v))}</td>
+                                  <td className="px-4 py-2.5 text-emerald-700">{formatMoney(v.visitTotalProfit)}</td>
+                                </tr>
+                              </tfoot>
                             </table>
                           </div>
                         )}
@@ -415,6 +455,18 @@ export default function PatientProfilePage() {
                   rows={3}
                   className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900"
                 />
+                <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">
+                  Checkup fee
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={visitForm.checkupFee}
+                    onChange={(e) => setVisitForm({ ...visitForm, checkupFee: e.target.value })}
+                    placeholder="0"
+                    className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-normal normal-case tracking-normal text-gray-900"
+                  />
+                </label>
                 <MedicineFormRows meds={meds} setMeds={setMeds} compact />
                 <button disabled={saving} className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-semibold text-white">
                   <Save className="h-4 w-4" /> {saving ? 'Saving…' : editingVisit ? 'Update visit' : 'Save visit'}

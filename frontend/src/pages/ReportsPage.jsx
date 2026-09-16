@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion } from '../../../lib/framer-motion.jsx'
+import { motion } from 'framer-motion'
 import { Download } from 'lucide-react'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { EmptyState, Loader, PageTransition, StatCard } from '../components/ui.jsx'

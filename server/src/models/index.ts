@@ -19,6 +19,7 @@ const PatientSchema = new Schema({
   totalProfit: { type: Number, default: 0 },
   totalTradePrice: { type: Number, default: 0 },
   totalSellingPrice: { type: Number, default: 0 },
+  totalCheckupFee: { type: Number, default: 0 },
 }, { timestamps: true })
 PatientSchema.index({ name: 'text', phone: 'text' }, { name: 'patient_search_text' })
 
@@ -27,6 +28,7 @@ const VisitSchema = new Schema({
   diagnosis: String,
   notes: String,
   medicines: { type: [MedicineSchema], default: [] },
+  checkupFee: { type: Number, default: 0, min: 0 },
   visitTotalProfit: { type: Number, default: 0 },
   visitTotalTradePrice: { type: Number, default: 0 },
   visitTotalSellingPrice: { type: Number, default: 0 },
