@@ -1,10 +1,7 @@
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// Turbopack resolveAlias must use project-relative paths (not absolute paths).
 const alias = {
-  'framer-motion': path.join(__dirname, 'lib/framer-motion.jsx'),
-  'react-router-dom': path.join(__dirname, 'lib/react-router-dom.jsx'),
+  'framer-motion': './lib/framer-motion.jsx',
+  'react-router-dom': './lib/react-router-dom.jsx',
 }
 
 /** @type {import('next').NextConfig} */
