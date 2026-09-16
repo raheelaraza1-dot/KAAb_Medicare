@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppLayout } from '../layouts/AppLayout.jsx'
 import { PageTransition } from '../components/ui.jsx'
-import { API_URL, api } from '../api/client.js'
+import { getApiUrl, api } from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 
 export default function SettingsPage() {
@@ -47,7 +47,7 @@ export default function SettingsPage() {
           <section className="rounded-2xl border border-gray-200 bg-white p-5">
             <h3 className="font-semibold text-gray-900">API connection</h3>
             <p className="mt-3 text-sm text-gray-500">Backend URL</p>
-            <p className="mt-1 break-all font-medium text-gray-900">{API_URL}</p>
+            <p className="mt-1 break-all font-medium text-gray-900">{getApiUrl()}</p>
             {error && <p className="mt-3 text-sm text-rose-600">{error}</p>}
             {health && (
               <p className="mt-3 text-sm text-gray-900">

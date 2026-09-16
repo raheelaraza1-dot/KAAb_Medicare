@@ -1,13 +1,58 @@
 import { clearToken, getStoredToken, isTokenExpired } from '../lib/auth'
 
-function resolveApiUrl() {
-  const fromEnv =
-    import.meta.env.VITE_API_URL !== undefined ? String(import.meta.env.VITE_API_URL) : undefined
-  if (fromEnv !== undefined) return fromEnv.replace(/\/$/, '')
-  return 'http://localhost:4000'
+function readEnv(name) {
+  try {
+    const vite = import.meta.env?.[name]
+    if (vite !== undefined && vite !== '') return String(vite)
+  } catch {
+    // Vite env is unavailable when this file is bundled by Next.js.
+  }
+  try {
+    const next = typeof process !== 'undefined' ? process.env?.[name] : undefined
+    if (next !== undefined && next !== '') return String(next)
+  } catch {
+    // process.env is unavailable in some browser builds.
+  }
+  return undefined
 }
 
-export const API_URL = resolveApiUrl()
+function isLocalHost(hostname) {
+  return hostname === 'localhost' || hostname === '127.0.0.1'
+}
+
+function isLocalUrl(url) {
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(url)
+}
+
+function resolveApiUrl() {
+  const fromEnv = readEnv('VITE_API_URL') ?? readEnv('NEXT_PUBLIC_API_URL')
+  let url = (fromEnv ?? '').replace(/\/$/, '')
+
+  const onDeployedHost =
+    typeof window !== 'undefined' && !isLocalHost(window.location.hostname)
+
+  // Deployed Vercel UI must use same-origin /api — never the developer's machine.
+  if (onDeployedHost && (!url || isLocalUrl(url))) {
+    return ''
+  }
+
+  if (url) return url
+
+  const prod =
+    (typeof import.meta !== 'undefined' && import.meta.env?.PROD) ||
+    (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production')
+
+  return prod ? '' : 'http://localhost:4000'
+}
+
+export function getApiUrl() {
+  const url = resolveApiUrl()
+  if (url) return url
+  if (typeof window !== 'undefined') return window.location.origin
+  return ''
+}
+
+export const API_URL = getApiUrl()
 
 export class ApiError extends Error {
   constructor(message, status, payload) {
@@ -30,7 +75,7 @@ async function request(path, { method = 'GET', body, token } = {}) {
 
   let response
   try {
-    response = await fetch(`${API_URL}${path}`, {
+    response = await fetch(`${resolveApiUrl()}${path}`, {
       method,
       headers,
       body: body !== undefined ? JSON.stringify(body) : undefined,
